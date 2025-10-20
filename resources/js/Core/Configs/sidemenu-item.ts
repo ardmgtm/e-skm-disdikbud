@@ -18,25 +18,39 @@ export const sideMenuItemData: SideMenuItem[] = [
         url: basicRoute('dashboard'),
     },
     {
-        label: 'User Management',
-        icon: 'pi pi-box',
-        permissions: ['user.browse','role.browse','user_activity.browse'],
-        items: [
-            { 
-                label: 'Users',
-                url: basicRoute('user.browse'),
-                permissions: 'user.browse',
-            }, 
-            { 
-                label: 'Roles & Permissions',
-                url: basicRoute('role.browse'),
-                permissions: 'role.browse',
-            }, 
-            { 
-                label: 'User Activity',
-                url: basicRoute('user_activity.browse'),
-                permissions: 'user_activity.browse',
-            }
-        ]
+        label: 'Konfigurasi SKM',
+        icon: 'pi pi-database',
+            items: [
+                {
+                    label: 'SKM',
+                    // url: basicRoute('skm.browse'), // jika ada route untuk SKM utama
+                },
+                {
+                    label: 'Layanan',
+                    url: basicRoute('service.browse'),
+                },
+            ]
     },
+    // {
+    //     label: 'User Management',
+    //     icon: 'pi pi-box',
+    //     permissions: ['user.browse','role.browse','user_activity.browse'],
+    //     items: [
+    //         { 
+    //             label: 'Users',
+    //             url: basicRoute('user.browse'),
+    //             permissions: 'user.browse',
+    //         }, 
+    //         { 
+    //             label: 'Roles & Permissions',
+    //             url: basicRoute('role.browse'),
+    //             permissions: 'role.browse',
+    //         }, 
+    //         { 
+    //             label: 'User Activity',
+    //             url: basicRoute('user_activity.browse'),
+    //             permissions: 'user_activity.browse',
+    //         }
+    //     ]
+    // },
 ]

@@ -15,16 +15,16 @@
         </div>
 
         <div class="flex items-center space-x-3">
-          <div>
+          <!-- <div>
             <Button icon="pi pi-search" size="small" label="Search" outlined severity="secondary"
               class="hidden md:flex justify-start w-36 " @click.stop="searchModalOpen = true" aria-controls="search-modal" />
             <Button icon="pi pi-search" size="small" outlined severity="secondary" rounded variant="text" class="md:hidden" @click.stop="searchModalOpen = true" aria-controls="search-modal" />
             <SearchModal id="search-modal" searchId="search" :modalOpen="searchModalOpen"
               @open-modal="searchModalOpen = true" @close-modal="searchModalOpen = false" />
           </div>
-          <Notifications align="right" />
+          <Notifications align="right" /> -->
           <!-- Divider -->
-          <hr class="w-px h-6 bg-gray-200 dark:bg-gray-700/60 border-none" />
+          <!-- <hr class="w-px h-6 bg-gray-200 dark:bg-gray-700/60 border-none" /> -->
           <HeaderAccount />
         </div>
       </div>

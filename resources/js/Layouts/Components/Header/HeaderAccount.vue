@@ -42,11 +42,6 @@ const accountMenuItems: Ref<MenuItem[]> = ref([
     {
         items: [
             {
-                label: 'Account',
-                icon: 'pi pi-user',
-                command: () => router.get(route('account.browse'))
-            },
-            {
                 label: 'Sign Out',
                 icon: 'pi pi-sign-out',
                 command: () => logoutAction(),

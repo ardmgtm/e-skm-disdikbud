@@ -16,32 +16,41 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
     Route::get('/dashboard', fn() => Inertia::render('Dashboard/DashboardView'))->name('dashboard');
 
-    Route::controller(UserController::class)->group(function () {
-        Route::get('/users', 'index')->name('user.browse')->can('user.browse');
-        Route::post('/users', 'create')->name('user.create')->can('user.create');
-        Route::put('/users/{user}', 'update')->name('user.update')->can('user.update');
-        Route::delete('/users/{user}', 'delete')->name('user.delete')->can('user.delete');
+    // Route::controller(UserController::class)->group(function () {
+    //     Route::get('/users', 'index')->name('user.browse')->can('user.browse');
+    //     Route::post('/users', 'create')->name('user.create')->can('user.create');
+    //     Route::put('/users/{user}', 'update')->name('user.update')->can('user.update');
+    //     Route::delete('/users/{user}', 'delete')->name('user.delete')->can('user.delete');
 
-        Route::get('/users/data-table', 'dataTable')->name('user.data_table')->can('user.browse');
-        Route::post('/users/switch-status','switchStatus')->name('user.switch_status')->can('user.update');
-    });
-    Route::controller(RoleAndPermissionController::class)->group(function () {
-        Route::get('/user-roles', 'index')->name('role.browse')->can('role.browse');
-        Route::post('/user-roles', 'create')->name('role.create')->can('role.create');
-        Route::put('/user-roles/{role}', 'update')->name('role.update')->can('role.update');
-        Route::delete('/user-roles/{role}', 'delete')->name('role.delete')->can('role.delete');
+    //     Route::get('/users/data-table', 'dataTable')->name('user.data_table')->can('user.browse');
+    //     Route::post('/users/switch-status','switchStatus')->name('user.switch_status')->can('user.update');
+    // });
+    // Route::controller(RoleAndPermissionController::class)->group(function () {
+    //     Route::get('/user-roles', 'index')->name('role.browse')->can('role.browse');
+    //     Route::post('/user-roles', 'create')->name('role.create')->can('role.create');
+    //     Route::put('/user-roles/{role}', 'update')->name('role.update')->can('role.update');
+    //     Route::delete('/user-roles/{role}', 'delete')->name('role.delete')->can('role.delete');
 
-        Route::get('/user-roles/{role}/permissions', 'getRolePermission')->name('role.permission_list')->can('role.browse');
-        Route::get('/user-roles/{role}/users', 'getRoleUser')->name('role.user_list')->can('role.browse');
-        Route::put('/user-roles/{role}/switch-permission', 'switchPermission')->name('role.switch_permission')->can('role.assign_permission');
-    });
-    Route::controller(UserActivityController::class)->group(function(){
-        Route::get('/user-activity','index')->name('user_activity.browse');
-        Route::get('/user-activity/data-table', 'dataTable')->name('user_activity.data_table');
-    });
-    Route::controller(AccountController::class)->group(function () {
-        Route::get('/account', 'index')->name('account.browse');
-        Route::post('/account/update-information', 'updateInformation')->name('account.update_information');
-        Route::post('/account/change-password', 'changePassword')->name('account.change_password');
+    //     Route::get('/user-roles/{role}/permissions', 'getRolePermission')->name('role.permission_list')->can('role.browse');
+    //     Route::get('/user-roles/{role}/users', 'getRoleUser')->name('role.user_list')->can('role.browse');
+    //     Route::put('/user-roles/{role}/switch-permission', 'switchPermission')->name('role.switch_permission')->can('role.assign_permission');
+    // });
+    // Route::controller(UserActivityController::class)->group(function(){
+    //     Route::get('/user-activity','index')->name('user_activity.browse');
+    //     Route::get('/user-activity/data-table', 'dataTable')->name('user_activity.data_table');
+    // });
+    // Route::controller(AccountController::class)->group(function () {
+    //     Route::get('/account', 'index')->name('account.browse');
+    //     Route::post('/account/update-information', 'updateInformation')->name('account.update_information');
+    //     Route::post('/account/change-password', 'changePassword')->name('account.change_password');
+    // });
+    Route::controller(App\Http\Controllers\MsServiceController::class)->group(function () {
+        Route::get('/service', 'index')->name('service.browse');
+        Route::post('/service', 'store')->name('service.create');
+        Route::put('/service/{service}', 'update')->name('service.update');
+        Route::delete('/service/{service}', 'delete')->name('service.delete');
+        Route::get('/service/data-table', 'dataTable')->name('service.data_table');
+        Route::get('/service/{service}', 'show')->name('service.show');
+        // Route::post('/service/switch-status','switchStatus')->name('service.switch_status'); // Uncomment jika ada fitur switch status
     });
 });
