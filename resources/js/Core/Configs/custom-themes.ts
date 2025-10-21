@@ -4,17 +4,17 @@ import { definePreset } from '@primevue/themes';
 const customPreset = definePreset(Aura, {
     semantic: {
         primary: {
-            50: '{indigo.50}',
-            100: '{indigo.100}',
-            200: '{indigo.200}',
-            300: '{indigo.300}',
-            400: '{indigo.400}',
-            500: '{indigo.500}',
-            600: '{indigo.600}',
-            700: '{indigo.700}',
-            800: '{indigo.800}',
-            900: '{indigo.900}',
-            950: '{indigo.950}'
+            50: '#e3eafd',
+            100: '#c7d4fa',
+            200: '#a3b8f3',
+            300: '#7a97ea',
+            400: '#5676e0',
+            500: '#3556d6',
+            600: '#2743b7',
+            700: '#1d3491',
+            800: '#182a72',
+            900: '#151f4d',
+            950: '#0c1127'
         }
     }
 });

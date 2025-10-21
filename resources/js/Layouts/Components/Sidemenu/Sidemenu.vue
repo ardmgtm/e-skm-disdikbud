@@ -16,7 +16,7 @@
         <Button class="lg:hidden" severity="secondary" icon="pi pi-arrow-left" variant="text" rounded
           @click.stop="$emit('close-sidebar')" aria-controls="sidebar" :aria-expanded="sidebarOpen" />
         <!-- Logo -->
-        <Link :href="route('dashboard')"><img src="/vite.svg" alt="app-logo" class="h-10" /></Link>
+        <Link :href="route('dashboard')"><img src="/images/logo.png" alt="app-logo" class="h-12" /></Link>
       </div>
 
       <div>

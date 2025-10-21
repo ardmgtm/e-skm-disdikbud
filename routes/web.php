@@ -53,4 +53,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/service/{service}', 'show')->name('service.show');
         // Route::post('/service/switch-status','switchStatus')->name('service.switch_status'); // Uncomment jika ada fitur switch status
     });
+
+    Route::controller(App\Http\Controllers\SkmHeaderController::class)->group(function () {
+        Route::get('/skm', 'index')->name('skm.browse');
+        Route::post('/skm', 'store')->name('skm.create');
+        Route::put('/skm/{skmHeader}', 'update')->name('skm.update');
+        Route::delete('/skm/{skmHeader}', 'delete')->name('skm.delete');
+        Route::get('/skm/data-table', 'dataTable')->name('skm.data_table');
+        Route::get('/skm/{skmHeader}', 'show')->name('skm.show');
+    });
 });

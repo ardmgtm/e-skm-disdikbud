@@ -15,10 +15,11 @@ return new class extends Migration {
             $table->unsignedBigInteger('id_skm_indicator')->nullable();
             $table->text('desc_skm_indicator')->nullable();
             $table->integer('value');
+            $table->text('feedback')->nullable();
             $table->foreign('id_skm_result_header')->references('id')->on('tr_skm_result_header');
             $table->foreign('id_skm_question')->references('id')->on('ms_skm_question');
             $table->foreign('id_skm_answer')->references('id')->on('ms_skm_question_option');
-            $table->foreign('id_skm_indicator')->references('id')->on('ms_skm_indicator');
+            $table->foreign('id_skm_indicator')->references('id')->on('vl_skm_indicator');
         });
     }
     public function down() {

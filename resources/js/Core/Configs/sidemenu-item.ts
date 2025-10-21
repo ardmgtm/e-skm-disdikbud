@@ -1,6 +1,6 @@
 import { MenuItem } from "primevue/menuitem";
 
-const basicRoute = (routeName : string, params = {}) => route(routeName,params,false);
+const basicRoute = (routeName: string, params = {}) => route(routeName, params, false);
 
 export interface SideMenuItem extends MenuItem {
     permissions?: string | string[];
@@ -18,18 +18,9 @@ export const sideMenuItemData: SideMenuItem[] = [
         url: basicRoute('dashboard'),
     },
     {
-        label: 'Konfigurasi SKM',
-        icon: 'pi pi-database',
-            items: [
-                {
-                    label: 'SKM',
-                    // url: basicRoute('skm.browse'), // jika ada route untuk SKM utama
-                },
-                {
-                    label: 'Layanan',
-                    url: basicRoute('service.browse'),
-                },
-            ]
+        label: 'E-SKM',
+        icon: 'pi pi-file',
+        url: basicRoute('skm.browse'),
     },
     // {
     //     label: 'User Management',

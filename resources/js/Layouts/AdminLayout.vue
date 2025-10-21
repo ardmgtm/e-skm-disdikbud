@@ -8,11 +8,12 @@
             <main class="grow">
                 <Transition name="page" mode="out-in" appear>
                     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-                        <div class="flex items-start flex-col flex-1" v-if="props.title">
-                            
-                            <div class="flex items-end justify-between w-full">
+                        <div class="flex items-start flex-col flex-1" >
+                            <div class="flex items-center justify-between w-full">
                                 <div class="font-bold text-2xl text-surface-900 dark:text-surface-0">
-                                    {{ props.title }}
+                                    <slot name="title">
+                                        {{ props.title }}
+                                    </slot>
                                 </div>
                                 <div class="flex-none">
                                     <slot name="action" />

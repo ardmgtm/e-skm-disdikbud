@@ -31,6 +31,7 @@ class MsServiceController extends Controller
         // $this->logActivity('Create new service'); // Uncomment jika ada logActivity
         $data = $request->validate([
             'service_name' => 'required|string|max:100',
+            'pic' => 'string|max:100',
         ]);
         DB::beginTransaction();
         try {
@@ -48,6 +49,7 @@ class MsServiceController extends Controller
         // $this->logActivity('Update service (id: ' . $id . ')'); // Uncomment jika ada logActivity
         $data = $request->validate([
             'service_name' => 'required|string|max:100',
+            'pic' => 'string|max:100',
         ]);
         $service = MsService::findOrFail($id);
         DB::beginTransaction();
