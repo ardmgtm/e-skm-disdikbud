@@ -4,14 +4,15 @@
     <div class="bg-surface-200 dark:bg-surface-950 px-6 py-20 md:px-12 lg:px-20 h-screen">
         <div class="bg-surface-0 dark:bg-surface-900 p-6 shadow-lg rounded-border max-w-3xl mx-auto my-auto">
             <div class="flex flex-col lg:flex-row">
-                <div class="w-full lg:w-1/2 hidden lg:block rounded-l-lg bg-[url('/images/login-illustrration.jpg')] bg-contain bg-no-repeat bg-center">
+                <div class="w-full lg:w-1/2 hidden lg:block rounded-l-lg bg-[url('/images/survey-illustration.png')] bg-contain bg-no-repeat bg-center">
                 </div>
                 <div class="w-full lg:w-1/2">
                     <div class="text-center mb-8">
                         <div class="flex items-center justify-center">
-                            <img src="/vite.svg" class="h-16" alt="App Logo"/>
+                            <img src="/images/logo.png" class="h-16" alt="App Logo"/>
                         </div>
-                        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome Back</div>
+                        <div class="text-surface-900 dark:text-surface-0 text-3xl font-bold mb-1">Manajamen SKM</div>
+                        <div class="text-surface-400 dark:text-surface-0 text-lg font-medium mb-4">Dinas Pendidikan dan Kebudayaan</div>
                     </div>
         
                     <Form class="flex flex-col gap-2" @submit="loginAction" :resolver="resolver">
@@ -40,7 +41,7 @@
         </div>
     </div>
     <footer class="bg-gray-900 text-white text-center py-4 fixed bottom-0 w-full text-sm">
-        © {{ currentYear }} Your Company. All rights reserved.
+        © {{ currentYear }} Dinas Pendidikan dan Kebudayaan Kota Bontang. All rights reserved.
     </footer>
 </template>
 <script setup lang="ts">
