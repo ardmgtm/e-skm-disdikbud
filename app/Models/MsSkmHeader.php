@@ -29,4 +29,9 @@ class MsSkmHeader extends Model
         'start_date' => 'date',
         'end_date' => 'date',
     ];
+
+    public function services()
+    {
+        return $this->hasMany(MsService::class, 'id_skm_header', 'id');
+    }
 }

@@ -10,6 +10,6 @@ class MsService extends Model
     use UserStamps, SoftDeletes;
     protected $table = 'ms_service';
     protected $fillable = [
-        'service_name', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'
+        'id_skm_header','service_name', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'
     ];
 }

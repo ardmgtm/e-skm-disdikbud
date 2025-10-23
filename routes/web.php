@@ -55,11 +55,14 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::controller(App\Http\Controllers\SkmHeaderController::class)->group(function () {
-        Route::get('/skm', 'index')->name('skm.browse');
-        Route::post('/skm', 'store')->name('skm.create');
-        Route::put('/skm/{skmHeader}', 'update')->name('skm.update');
-        Route::delete('/skm/{skmHeader}', 'delete')->name('skm.delete');
-        Route::get('/skm/data-table', 'dataTable')->name('skm.data_table');
-        Route::get('/skm/{skmHeader}', 'show')->name('skm.show');
+        Route::get('/pengelolaan-skm', 'index')->name('skm.browse');
+        Route::post('/pengelolaan-skm', 'store')->name('skm.create');
+        Route::put('/pengelolaan-skm/{skmHeader}', 'update')->name('skm.update');
+        Route::delete('/pengelolaan-skm/{skmHeader}', 'delete')->name('skm.delete');
+        Route::get('/pengelolaan-skm/data-table', 'dataTable')->name('skm.data_table');
+        Route::get('/pengelolaan-skm/{skmHeader}', 'show')->name('skm.show');
+
+        Route::get('/pengelolaan-skm/{skmHeader}/preview', 'preview')->name('skm.preview');
+        Route::post('/pengelolaan-skm/{skmHeader}/update-detail', 'updateDetail')->name('skm.save_detail');
     });
 });

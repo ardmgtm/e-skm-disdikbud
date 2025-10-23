@@ -8,7 +8,7 @@
                 class="p-2 rounded-lg border border-gray-300 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="pi pi-users"></i>
-                    <p>{{ service.name }}</p>
+                    <p>{{ service.service_name }}</p>
                 </div>
                 <div class="flex">
                     <Button icon="pi pi-pencil" label="Edit" variant="text" severity="contrast" size="small"
@@ -36,7 +36,7 @@ import ServiceFormModal from './ServiceFormModal.vue';
 
 interface Service {
     id: number;
-    name: string;
+    service_name: string;
 }
 
 const props = defineProps<{

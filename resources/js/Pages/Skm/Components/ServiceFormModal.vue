@@ -2,8 +2,8 @@
     <Dialog :header="editMode ? 'Edit Layanan' : 'Tambah Layanan'" v-model:visible="dialogVisible" class="w-full max-w-md" :draggable="false" modal>
         <AppForm class="flex flex-col gap-2" v-model="formData" v-model:errors="formErrors" :resolver label-position="top"
             @submit="(e) => !editMode ? addSubmitAction(e) : editSubmitAction(e)">
-            <AppFormField name="name" label="Nama Layanan" required>
-                <AppFormInput id="name" placeholder="Nama Layanan" v-model="formData.name" type="text" />
+            <AppFormField name="service_name" label="Nama Layanan" required>
+                <AppFormInput id="service_name" placeholder="Nama Layanan" v-model="formData.service_name" type="text" />
             </AppFormField>
             <div class="flex justify-end w-full gap-2 mt-2">
                 <Button label="Cancel" severity="secondary" @click.prevent="closeDialog" />
@@ -28,12 +28,12 @@ const editMode: Ref<boolean> = ref(false);
 
 const formData = reactive({
     id: null,
-    name: '',
+    service_name: '',
 });
 const formErrors = ref();
 const resolver = yupResolver(
     yup.object().shape({
-        name: yup.string().required('Nama layanan wajib diisi'),
+        service_name: yup.string().required('Nama layanan wajib diisi'),
     })
 );
 
@@ -45,13 +45,13 @@ function addAction() {
     editMode.value = false;
     formErrors.value = [];
     formData.id = null;
-    formData.name = '';
+    formData.service_name = '';
 }
 function addSubmitAction(event: FormSubmitEvent) {
     formErrors.value = {};
     if (event.valid) {
         closeDialog();
-        emit('data-created', { id: formData.id, name: formData.name });
+        emit('data-created', { id: formData.id, service_name: formData.service_name });
     }
 }
 function editAction(data: any) {
@@ -59,12 +59,12 @@ function editAction(data: any) {
     editMode.value = true;
     formErrors.value = [];
     formData.id = data.id;
-    formData.name = data.name;
+    formData.service_name = data.service_name;
 }
 function editSubmitAction(event: FormSubmitEvent) {
     if (event.valid) {
         closeDialog();
-        emit('data-updated', { id: formData.id, name: formData.name });
+        emit('data-updated', { id: formData.id, service_name: formData.service_name });
     }
 }
 

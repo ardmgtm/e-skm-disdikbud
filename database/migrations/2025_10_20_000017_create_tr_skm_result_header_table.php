@@ -9,6 +9,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('id_skm_header');
             $table->unsignedBigInteger('id_service');
+            $table->text('notes')->nullable();
             $table->dateTime('timestamps');
             $table->foreign('id_skm_header')->references('id')->on('ms_skm_header');
             $table->foreign('id_service')->references('id')->on('ms_service');

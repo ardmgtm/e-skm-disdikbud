@@ -8,8 +8,8 @@ return new class extends Migration {
         Schema::create('ms_skm_header', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->string('name', 100);
-            $table->string('title', 100)->nullable();
+            $table->string('name', 500);
+            $table->string('title', 500)->nullable();
             $table->text('description')->nullable();
             $table->date('start_date');
             $table->date('end_date');
