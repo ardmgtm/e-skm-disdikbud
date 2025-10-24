@@ -188,6 +188,7 @@ class SkmHeaderController extends Controller
                 'id_skm_header' => $header->id,
                 'id_service' => $data['resultHeader']['id_service'],
                 'timestamps' => now(),
+                'notes' => $data['resultHeader']['notes'] ?? null,
             ]);
 
             // Simpan data responden

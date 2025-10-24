@@ -7,7 +7,7 @@ class TrSkmResultHeader extends Model
 {
     protected $table = 'tr_skm_result_header';
     protected $fillable = [
-        'id_skm_header', 'id_service', 'timestamps'
+        'id_skm_header', 'id_service', 'timestamps', 'notes'
     ];
 
     public $timestamps = false;

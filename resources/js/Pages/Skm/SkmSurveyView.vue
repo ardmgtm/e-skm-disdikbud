@@ -11,7 +11,7 @@
             <b>Pratinjau Survei</b> - Data yang diisi tidak akan dikirim atau disimpan.
         </div>
     </div>
-    <div class="max-w-2xl mx-auto my-8 p-4 rounded-lg border border-gray-300 shadow-lg bg-white">
+    <div class="max-w-2xl m-2  md:mx-auto my-8 p-4 rounded-lg border border-gray-300 shadow-lg bg-white">
         <Steps :model="steps" :activeStep="activeStep" class="mb-6" />
         <div v-if="activeStep === 0">
             <Card>
@@ -127,10 +127,13 @@
                                 class="text-sm text-red-600 font-semibold">{{ question.explanationLabel }}</div>
                             <div
                                 v-if="formData.answers[question.id]?.value === 1 || formData.answers[question.id]?.value === 2">
-                                <AppFormInput v-model="formData.answers[question.id].feedback" type="text"
+                                <InputText fluid v-model="formData.answers[question.id].feedback" :id="'feedback-' + question.id"
+                                    type="text"
                                     placeholder="Penjelasan..." />
                             </div>
                         </div>
+                        <p>Catatan serta masukan lain yang perlu disampaikan terhadap layanan yang diterima</p>
+                        <Textarea v-model="formData.resultHeader.notes" placeholder="Tulis catatan atau masukan lain di sini..." />
                     </div>
                 </template>
             </Card>
@@ -207,6 +210,7 @@ import Steps from 'primevue/steps';
 import Button from 'primevue/button';
 import RadioButton from 'primevue/radiobutton';
 import { Head, usePage } from '@inertiajs/vue3';
+import { Input } from 'postcss';
 
 const skmHeader = ref(usePage().props.skm_header as any);
 const loadingSubmit = ref(false);
