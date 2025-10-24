@@ -9,4 +9,6 @@ class TrRespondent extends Model
     protected $fillable = [
         'id_skm_result_header', 'gender', 'age', 'id_education', 'name_education', 'id_occupation', 'name_occupation'
     ];
+
+    public $timestamps = false;
 }

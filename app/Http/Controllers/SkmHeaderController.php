@@ -8,6 +8,8 @@ use App\Models\MsSkmHeader;
 use Illuminate\Support\Facades\DB;
 use App\Http\Responses\DataTableResponse;
 use App\Http\Responses\JsonResponse;
+use App\Models\VlEducation;
+use App\Models\VlOccupation;
 use App\Models\VlSkmIndicator;
 use Throwable;
 
@@ -85,15 +87,7 @@ class SkmHeaderController extends Controller
         }
     }
 
-    public function preview(Request $request, $uuid)
-    {
-        $header = MsSkmHeader::with(['services'])->where('uuid', $uuid)->firstOrFail();
-        return Inertia::render('Skm/SkmSurveyView', [
-            'skm_header' => $header,
-            'is_preview' => true,
-        ]);
-    }
-
+    
     public function updateDetail(Request $request, $id)
     {
         $data = $request->validate([
@@ -135,9 +129,83 @@ class SkmHeaderController extends Controller
             DB::commit();
             return JsonResponse::success('Berhasil update detail SKM');
         } catch (Throwable $e) {
-            dd($e);
             DB::rollBack();
             return JsonResponse::failed('Gagal update detail SKM');
+        }
+    }
+
+    public function preview(Request $request, $uuid)
+    {
+        $header = MsSkmHeader::with(['services'])->where('uuid', $uuid)->firstOrFail();
+        $educations = VlEducation::all();
+        $occupations = VlOccupation::all();
+        $indicators = VlSkmIndicator::all();
+        return Inertia::render('Skm/SkmSurveyView', [
+            'skm_header' => $header,
+            'is_preview' => true,
+            'educations' => $educations,
+            'occupations' => $occupations,
+            'indicators' => $indicators,
+        ]);
+    }
+
+
+    public function fillSurvey(Request $request, $uuid)
+    {
+        $header = MsSkmHeader::with(['services'])->where('uuid', $uuid)->firstOrFail();
+        $educations = VlEducation::all();
+        $occupations = VlOccupation::all();
+        $indicators = VlSkmIndicator::all();
+        return Inertia::render('Skm/SkmSurveyView', [
+            'skm_header' => $header,
+            'is_preview' => false,
+            'educations' => $educations,
+            'occupations' => $occupations,
+            'indicators' => $indicators,
+        ]);
+    }
+
+    public function submitSurvey(Request $request, $uuid)
+    {
+        $header = MsSkmHeader::where('uuid', $uuid)->firstOrFail();
+        $data = $request->validate([
+            'respondent.gender' => 'required|boolean',
+            'respondent.age' => 'required|integer|min:1|max:120',
+            'respondent.id_education' => 'nullable|integer',
+            'respondent.name_education' => 'nullable|string',
+            'respondent.id_occupation' => 'nullable|integer',
+            'respondent.name_occupation' => 'required|string',
+            'respondent.name_occupation_other' => 'nullable|string',
+            'resultHeader.id_service' => 'required|integer',
+            'resultHeader.notes' => 'nullable|string',
+            'answers' => 'required|array',
+        ]);
+
+    DB::beginTransaction();
+        try {
+            // Simpan header hasil survei
+            $resultHeader = \App\Models\TrSkmResultHeader::create([
+                'id_skm_header' => $header->id,
+                'id_service' => $data['resultHeader']['id_service'],
+                'timestamps' => now(),
+            ]);
+
+            // Simpan data responden
+            $respondent = $data['respondent'];
+            $respondent['id_skm_result_header'] = $resultHeader->id;
+            \App\Models\TrRespondent::create($respondent);
+
+            // Simpan jawaban survei
+            foreach ($data['answers'] as $answer) {
+                $answer['id_skm_result_header'] = $resultHeader->id;
+                \App\Models\TrSkmResultAnswer::create($answer);
+            }
+
+            DB::commit();
+            return JsonResponse::success('Berhasil submit survei');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return JsonResponse::failed('Gagal submit survei', ['error' => $e->getMessage()]);
         }
     }
 }

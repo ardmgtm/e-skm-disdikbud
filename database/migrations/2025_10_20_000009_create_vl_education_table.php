@@ -7,7 +7,7 @@ return new class extends Migration {
     public function up() {
         Schema::create('vl_education', function (Blueprint $table) {
             $table->id();
-            $table->string('eduction_desc', 100);
+            $table->string('education_desc', 100);
         });
     }
     public function down() {

@@ -42,73 +42,47 @@
                         </AppFormField>
                         <AppFormField label="Pendidikan Terakhir" required>
                             <div class="flex flex-wrap gap-4">
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_education" inputId="pend-sd"
-                                        value="SD" />
-                                    <label for="pend-sd">SD</label>
-                                </div>
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_education" inputId="pend-smp"
-                                        value="SMP" />
-                                    <label for="pend-smp">SMP</label>
-                                </div>
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_education" inputId="pend-sma"
-                                        value="SMA" />
-                                    <label for="pend-sma">SMA</label>
-                                </div>
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_education" inputId="pend-d1d3"
-                                        value="D1-D3" />
-                                    <label for="pend-d1d3">D1-D3</label>
-                                </div>
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_education" inputId="pend-d4s1"
-                                        value="D4/S1" />
-                                    <label for="pend-d4s1">D4/S1</label>
-                                </div>
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_education" inputId="pend-s2s3"
-                                        value="S2-S3" />
-                                    <label for="pend-s2s3">S2-S3</label>
+                                <div v-for="edu in educations" :key="edu.id" class="flex gap-2 items-center">
+                                    <RadioButton
+                                        :inputId="'pend-' + edu.id"
+                                        :value="edu.id"
+                                        :checked="formData.respondent.id_education === edu.id"
+                                        @change="() => {
+                                            formData.respondent.id_education = edu.id;
+                                            formData.respondent.name_education = edu.education_desc;
+                                        }"
+                                    />
+                                    <label :for="'pend-' + edu.id">{{ edu.education_desc }}</label>
                                 </div>
                             </div>
                         </AppFormField>
                         <AppFormField label="Pekerjaan" required>
                             <div class="flex flex-wrap gap-4">
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_occupation" inputId="kerja-pns"
-                                        value="PNS" />
-                                    <label for="kerja-pns">PNS</label>
+                                <div v-for="occ in occupations" :key="occ.id" class="flex gap-2 items-center">
+                                    <RadioButton
+                                        :inputId="'kerja-' + occ.id"
+                                        :value="occ.id"
+                                        :checked="formData.respondent.id_occupation === occ.id"
+                                        @change="() => {
+                                            formData.respondent.id_occupation = occ.id;
+                                            formData.respondent.name_occupation = occ.occupation_desc;
+                                        }"
+                                    />
+                                    <label :for="'kerja-' + occ.id">{{ occ.occupation_desc }}</label>
                                 </div>
                                 <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_occupation" inputId="kerja-tni"
-                                        value="TNI/Polri" />
-                                    <label for="kerja-tni">TNI/Polri</label>
-                                </div>
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_occupation" inputId="kerja-swasta"
-                                        value="Peg. Swasta" />
-                                    <label for="kerja-swasta">Peg. Swasta</label>
-                                </div>
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_occupation" inputId="kerja-wira"
-                                        value="Wiraswasta" />
-                                    <label for="kerja-wira">Wiraswasta</label>
-                                </div>
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_occupation" inputId="kerja-pelajar"
-                                        value="Pelajar/Mahasiswa" />
-                                    <label for="kerja-pelajar">Pelajar/Mahasiswa</label>
-                                </div>
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton v-model="formData.respondent.name_occupation" inputId="kerja-other"
-                                        value="Other" />
+                                    <RadioButton
+                                        inputId="kerja-other"
+                                        :value="'Other'"
+                                        :checked="formData.respondent.id_occupation === null && formData.respondent.name_occupation === 'Other'"
+                                        @change="() => {
+                                            formData.respondent.id_occupation = null;
+                                            formData.respondent.name_occupation = 'Other';
+                                        }"
+                                    />
                                     <label for="kerja-other">Other:</label>
                                 </div>
-                                <AppFormInput v-if="formData.respondent.name_occupation === 'Other'"
-                                    v-model="formData.respondent.name_occupation_other" type="text"
-                                    placeholder="Sebutkan pekerjaan lain..." />
+                                <AppFormInput v-if="formData.respondent.name_occupation === 'Other'" v-model="formData.respondent.name_occupation_other" type="text" placeholder="Sebutkan pekerjaan lain..." />
                             </div>
                         </AppFormField>
                     </AppForm>
@@ -141,7 +115,9 @@
                                     <template v-for="(option, optIdx) in question.options" :key="optIdx">
                                         <div class="flex gap-2 items-center">
                                             <RadioButton v-model="formData.answers[question.id].value"
-                                                :inputId="'q' + question.id + '-opt' + optIdx" :value="optIdx + 1" />
+                                                :inputId="'q' + question.id + '-opt' + optIdx" :value="optIdx + 1"
+                                                @change="() => { formData.answers[question.id].desc_skm_answer = option; }"
+                                            />
                                             <label :for="'q' + question.id + '-opt' + optIdx">{{ option }}</label>
                                         </div>
                                     </template>
@@ -184,6 +160,12 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue';
 
+// Props for education and occupation options
+const props = defineProps<{ educations: Array<{ id: number, education_desc: string }>, occupations: Array<{ id: number, occupation_desc: string }> }>();
+
+const educations = ref(props.educations ?? []);
+const occupations = ref(props.occupations ?? []);
+
 // Migration-based interfaces
 export interface SkmResultHeader {
     id?: number;
@@ -208,8 +190,8 @@ export interface Respondent {
 export interface SkmResultAnswer {
     id?: number;
     id_skm_result_header?: number;
-    id_skm_question: number;
-    desc_skm_question: string;
+    id_skm_question?: number;
+    desc_skm_question?: string;
     id_skm_answer?: number | null;
     desc_skm_answer?: string;
     id_skm_indicator?: number | null;
@@ -224,7 +206,6 @@ import Card from 'primevue/card';
 import Steps from 'primevue/steps';
 import Button from 'primevue/button';
 import RadioButton from 'primevue/radiobutton';
-import Rating from 'primevue/rating';
 import { Head, usePage } from '@inertiajs/vue3';
 
 const skmHeader = ref(usePage().props.skm_header as any);
@@ -244,9 +225,9 @@ const formData = reactive({
     respondent: {
         gender: null,
         age: null,
-        id_education: null,
+        id_education: null as number | null,
         name_education: '',
-        id_occupation: null,
+        id_occupation: null as number | null,
         name_occupation: '',
         name_occupation_other: '',
     },
@@ -263,6 +244,8 @@ const services = ref(skmHeader.value.services);
 const questions = ref([
     {
         id: 1,
+        id_indicator: 1,
+        indicator_name: 'Persyaratan',
         text: 'Apakah syarat yang harus dipenuhi sesuai dengan persyaratan pelayanan yang diinformasikan/ dipublikasikan?',
         options: ['Tidak Sesuai', 'Kurang Sesuai', 'Sesuai', 'Sangat Sesuai'],
         explanationRequired: [1, 2],
@@ -270,6 +253,8 @@ const questions = ref([
     },
     {
         id: 2,
+        id_indicator: 2,
+        indicator_name: 'Sistem, Mekanisme, dan Prosedur',
         text: 'Bagaimana pendapat anda tentang kemudahan prosedur untuk mendapatkan pelayanan?',
         options: ['Berbelit, Tidak Mudah', 'Agak Mudah', 'Mudah', 'Sangat Mudah'],
         explanationRequired: [1, 2],
@@ -277,6 +262,8 @@ const questions = ref([
     },
     {
         id: 3,
+        id_indicator: 3,
+        indicator_name: 'Waktu Penyelesaian',
         text: 'Bagaimana pendapat anda terkait kecepatan pemberian pelayanan dengan yang diinformasikan/ dipublikasikan?',
         options: ['Tidak Cepat', 'Kurang Cepat', 'Cepat', 'Sangat Cepat'],
         explanationRequired: [1, 2],
@@ -284,6 +271,8 @@ const questions = ref([
     },
     {
         id: 4,
+        id_indicator: 4,
+        indicator_name: 'Biaya/Tarif',
         text: 'Bagaimana pendapat anda tentang kesesuaian/ kewajaran biaya pelayanan yang dibayarkan dengan yang diinformasikan/ dipublikasikan?',
         options: ['Sangat Mahal', 'Cukup Mahal', 'Murah', 'Gratis'],
         explanationRequired: [1, 2],
@@ -291,6 +280,8 @@ const questions = ref([
     },
     {
         id: 5,
+        id_indicator: 5,
+        indicator_name: 'Produk Spesifikasi Jenis Pelayanan',
         text: 'Apakah pelayanan yang anda terima sesuai dengan Standar Pelayanan yang Tercantum?',
         options: ['Tidak Sesuai', 'Kurang Sesuai', 'Sesuai', 'Sangat Sesuai'],
         explanationRequired: [1, 2],
@@ -298,6 +289,8 @@ const questions = ref([
     },
     {
         id: 6,
+        id_indicator: 6,
+        indicator_name: 'Kompetensi Pelaksana',
         text: 'Bagaimana pendapat anda tentang kemampuan/ kompetensi petugas dalam memberikan pelayanan?',
         options: ['Tidak Mampu', 'Kurang Mampu', 'Mampu/Kompeten', 'Sangat Mampu dan Terampil'],
         explanationRequired: [1, 2],
@@ -305,6 +298,8 @@ const questions = ref([
     },
     {
         id: 7,
+        id_indicator: 7,
+        indicator_name: 'Perilaku Pelaksana',
         text: 'Bagaimana pendapat anda dengan tutur kata, sikap, dan perilaku petugas pada saat memberikan pelayanan kepada saudara?',
         options: ['Tidak Sopan dan Ramah', 'Kurang Sopan dan Ramah', 'Sopan dan Ramah', 'Sangat Sopan dan Ramah'],
         explanationRequired: [1, 2],
@@ -312,6 +307,8 @@ const questions = ref([
     },
     {
         id: 8,
+        id_indicator: 8,
+        indicator_name: 'Penanganan Pengaduan, Saran dan Masukan',
         text: 'Bagaimana pendapat anda tentang penanganan pengaduan pengguna layanan?',
         options: ['Tidak Ada', 'Ada, Tetapi Tidak Berfungsi', 'Berfungsi Kurang Maksimal', 'Dikelola Dengan Baik'],
         explanationRequired: [1, 2],
@@ -319,6 +316,8 @@ const questions = ref([
     },
     {
         id: 9,
+        id_indicator: 9,
+        indicator_name: 'Sarana dan Prasarana',
         text: 'Bagaimana pendapat anda tentang kualitas sarana dan prasana pada pelayanan ini?',
         options: ['Buruk', 'Cukup', 'Baik', 'Sangat Baik'],
         explanationRequired: [1, 2],
@@ -330,8 +329,9 @@ const questions = ref([
 questions.value.forEach(q => {
     if (!formData.answers[q.id]) {
         formData.answers[q.id] = {
-            id_skm_question: q.id,
             desc_skm_question: q.text,
+            id_skm_indicator: q.id_indicator,
+            desc_skm_indicator: q.indicator_name,
             value: 0,
             feedback: ''
         };
@@ -370,7 +370,6 @@ function prevStep() {
     }
 }
 function submitSurvey() {
-    console.log('Submitting survey data:', formData);
     if (isPreview.value) {
         loadingSubmit.value = true;
         setTimeout(() => {
@@ -381,11 +380,23 @@ function submitSurvey() {
     }
     if (canSubmit.value) {
         loadingSubmit.value = true;
-        setTimeout(() => {
-            activeStep.value = 4;
-            loadingSubmit.value = false;
-            // Here you can send formData to backend if needed
-        }, 1200);
+        // Submit ke backend
+        import('axios').then(({ default: axios }) => {
+            axios.post(route('skm.submit_survey', { skmHeader: skmHeader.value.uuid }), {
+                respondent: formData.respondent,
+                resultHeader: formData.resultHeader,
+                answers: Object.values(formData.answers),
+            })
+            .then(() => {
+                activeStep.value = 4;
+            })
+            .catch(() => {
+                // TODO: tampilkan error
+            })
+            .finally(() => {
+                loadingSubmit.value = false;
+            });
+        });
     }
 }
 </script>

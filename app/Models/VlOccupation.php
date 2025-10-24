@@ -9,4 +9,6 @@ class VlOccupation extends Model
     protected $fillable = [
         'occupation_desc'
     ];
+
+    public $timestamps = false;
 }

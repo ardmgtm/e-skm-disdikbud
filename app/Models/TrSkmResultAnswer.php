@@ -9,4 +9,6 @@ class TrSkmResultAnswer extends Model
     protected $fillable = [
         'id_skm_result_header', 'id_skm_question', 'desc_skm_question', 'id_skm_answer', 'desc_skm_answer', 'id_skm_indicator', 'desc_skm_indicator', 'value'
     ];
+
+    public $timestamps = false;
 }

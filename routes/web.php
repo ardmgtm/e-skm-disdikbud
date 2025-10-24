@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\SkmHeaderController;
 use App\Http\Controllers\User\RoleAndPermissionController;
 use App\Http\Controllers\User\UserActivityController;
 use App\Http\Controllers\User\UserController;
@@ -66,3 +67,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pengelolaan-skm/{skmHeader}/update-detail', 'updateDetail')->name('skm.save_detail');
     });
 });
+
+Route::get('/skm/{skmHeader}', [SkmHeaderController::class,'fillSurvey'])->name('skm.fillSurvey');
+Route::post('/skm/{skmHeader}', [SkmHeaderController::class,'submitSurvey'])->name('skm.submit_survey');

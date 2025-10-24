@@ -7,6 +7,8 @@ class VlEducation extends Model
 {
     protected $table = 'vl_education';
     protected $fillable = [
-        'eduction_desc'
+        'education_desc'
     ];
+
+    public $timestamps = false;
 }

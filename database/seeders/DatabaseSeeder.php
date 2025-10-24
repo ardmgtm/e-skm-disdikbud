@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\VlEducation;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,6 +16,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             RoleAndPermissionSeeder::class,
             VlSkmIndicatorSeeder::class,
+            VlEducationSeeder::class,
+            VlOccupationSeeder::class,
         ]);
     }
 }

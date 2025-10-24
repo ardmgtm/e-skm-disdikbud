@@ -9,4 +9,6 @@ class TrSkmResultHeader extends Model
     protected $fillable = [
         'id_skm_header', 'id_service', 'timestamps'
     ];
+
+    public $timestamps = false;
 }
