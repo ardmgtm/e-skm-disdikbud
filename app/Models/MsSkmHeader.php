@@ -4,10 +4,11 @@ namespace App\Models;
 use App\Traits\UserStamps;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MsSkmHeader extends Model
 {
-    use HasUuids, UserStamps;
+    use HasUuids, UserStamps, SoftDeletes;
     protected $table = 'ms_skm_header';
     protected $primaryKey = 'id';
     protected $keyType = 'int';

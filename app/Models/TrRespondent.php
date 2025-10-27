@@ -11,4 +11,9 @@ class TrRespondent extends Model
     ];
 
     public $timestamps = false;
+
+    public function skmResultHeader()
+    {
+        return $this->belongsTo(TrSkmResultHeader::class, 'id_skm_result_header');
+    }
 }

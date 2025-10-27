@@ -1,6 +1,6 @@
 <template>
     <div class="mb-2">
-        <Button label="Tambah Layanan" icon="pi pi-plus" severity="primary" size="small" @click="addService" />
+        <Button label="Tambah Layanan" icon="pi pi-plus" severity="primary" size="small" @click="addService" v-if="!disabled" />
     </div>
     <div class="flex flex-col min-h-96" v-if="(modelValue.length > 0)">
         <div class="flex-1 flex flex-col gap-2">
@@ -12,9 +12,9 @@
                 </div>
                 <div class="flex">
                     <Button icon="pi pi-pencil" label="Edit" variant="text" severity="contrast" size="small"
-                        @click="editService(service)" />
+                        @click="editService(service)" v-if="!disabled" />
                     <Button icon="pi pi-trash" label="Hapus" variant="text" severity="danger" size="small"
-                        @click="deleteService(service)" />
+                        @click="deleteService(service)" v-if="!disabled" />
                 </div>
             </div>
         </div>
@@ -40,7 +40,8 @@ interface Service {
 }
 
 const props = defineProps<{
-    modelValue: Service[]
+    modelValue: Service[],
+    disabled?: boolean
 }>();
 const emits = defineEmits(['update:modelValue']);
 

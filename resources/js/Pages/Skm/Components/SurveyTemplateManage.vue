@@ -5,22 +5,22 @@
                 <h2 class="text-xl font-bold">Informasi Umum</h2>
                 <Divider />
                 <AppFormField label="Judul Survei" required>
-                    <AppFormInput v-model="formSurvey.title" type="text" placeholder="Masukkan judul survei" />
+                    <AppFormInput v-model="formSurvey.title" type="text" placeholder="Masukkan judul survei" :disabled="props.headerData.is_published" />
                 </AppFormField>
                 <AppFormField label="Kata Pengantar" required>
-                    <Textarea v-model="formSurvey.description" placeholder="Masukkan Kata Pengantar" fluid rows="6" />
+                    <Textarea v-model="formSurvey.description" placeholder="Masukkan Kata Pengantar" fluid rows="6" :disabled="props.headerData.is_published" />
                 </AppFormField>
             </div>
             <div class="flex-1">
                 <h2 class="text-xl font-bold">Daftar Layanan</h2>
                 <Divider />
-                <ServiceForm v-model="formSurvey.services" field-name="service_name" />
+                <ServiceForm v-model="formSurvey.services" field-name="service_name" :disabled="props.headerData.is_published" />
             </div>
         </div>
     </AppForm>
     <Divider />
     <div class="w-full flex justify-end">
-        <Button label="Simpan Perubahan" icon="pi pi-save" @click="saveOrUpdate" :loading="loading" />
+        <Button label="Simpan Perubahan" icon="pi pi-save" @click="saveOrUpdate" :loading="loading" v-if="!props.headerData.is_published" />
     </div>
 </template>
 <script setup lang="ts">
@@ -38,6 +38,7 @@ const toast = useToast();
 const loading = ref(false);
 
 function saveOrUpdate() {
+    if (props.headerData.is_published) return;
     loading.value = true;
     const payload = {
         title: formSurvey.title,

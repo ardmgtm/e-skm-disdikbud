@@ -133,6 +133,19 @@ class SkmHeaderController extends Controller
             return JsonResponse::failed('Gagal update detail SKM');
         }
     }
+    public function publish(Request $request, $uuid)
+    {
+        $header = MsSkmHeader::where('uuid', $uuid)->firstOrFail();
+        DB::beginTransaction();
+        try {
+            $header->update(['is_published' => true]);
+            DB::commit();
+            return JsonResponse::success('Berhasil mempublikasikan SKM');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return JsonResponse::failed('Gagal mempublikasikan SKM');
+        }
+    }
 
     public function preview(Request $request, $uuid)
     {
@@ -152,7 +165,10 @@ class SkmHeaderController extends Controller
 
     public function fillSurvey(Request $request, $uuid)
     {
-        $header = MsSkmHeader::with(['services'])->where('uuid', $uuid)->firstOrFail();
+        $header = MsSkmHeader::with(['services'])->where('uuid', $uuid)->first();
+        if (!$header || !$header->is_published) {
+            abort(404);
+        }
         $educations = VlEducation::all();
         $occupations = VlOccupation::all();
         $indicators = VlSkmIndicator::all();

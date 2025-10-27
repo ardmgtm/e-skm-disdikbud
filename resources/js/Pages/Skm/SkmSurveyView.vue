@@ -45,6 +45,7 @@
                                 <div v-for="edu in educations" :key="edu.id" class="flex gap-2 items-center">
                                     <RadioButton
                                         :inputId="'pend-' + edu.id"
+                                        v-model="formData.respondent.id_education"
                                         :value="edu.id"
                                         :checked="formData.respondent.id_education === edu.id"
                                         @change="() => {
@@ -61,6 +62,7 @@
                                 <div v-for="occ in occupations" :key="occ.id" class="flex gap-2 items-center">
                                     <RadioButton
                                         :inputId="'kerja-' + occ.id"
+                                        v-model="formData.respondent.id_occupation"
                                         :value="occ.id"
                                         :checked="formData.respondent.id_occupation === occ.id"
                                         @change="() => {
@@ -69,18 +71,6 @@
                                         }"
                                     />
                                     <label :for="'kerja-' + occ.id">{{ occ.occupation_desc }}</label>
-                                </div>
-                                <div class="flex gap-2 items-center">
-                                    <RadioButton
-                                        inputId="kerja-other"
-                                        :value="'Other'"
-                                        :checked="formData.respondent.id_occupation === null && formData.respondent.name_occupation === 'Other'"
-                                        @change="() => {
-                                            formData.respondent.id_occupation = null;
-                                            formData.respondent.name_occupation = 'Other';
-                                        }"
-                                    />
-                                    <label for="kerja-other">Other:</label>
                                 </div>
                                 <AppFormInput v-if="formData.respondent.name_occupation === 'Other'" v-model="formData.respondent.name_occupation_other" type="text" placeholder="Sebutkan pekerjaan lain..." />
                             </div>
@@ -91,7 +81,7 @@
         </div>
         <div v-else-if="activeStep === 2">
             <Card>
-                <template #title>Pilih Layanan</template>
+                <template #title>Pilih Layanan yang akan dinilai</template>
                 <template #content>
                     <div class="flex flex-col gap-2">
                         <div v-for="service in services" :key="service.id"
@@ -151,12 +141,12 @@
             </Card>
         </div>
         <div class="flex justify-between mt-6">
-            <Button label="Sebelumnya" icon="pi pi-arrow-left" :disabled="activeStep === 0 || activeStep === 4"
+            <Button label="Sebelumnya" icon="pi pi-arrow-left" :disabled="activeStep === 0 || activeStep === 4 || loadingSubmit"
                 @click="prevStep" v-if="activeStep < 4" />
             <Button v-if="activeStep < 3" label="Berikutnya" icon="pi pi-arrow-right" iconPos="right" @click="nextStep"
-                :disabled="!canProceed" />
+                :disabled="!canProceed || loadingSubmit" />
             <Button v-else-if="activeStep === 3" label="Submit" icon="pi pi-check" severity="success"
-                :loading="loadingSubmit" @click="submitSurvey" :disabled="!canSubmit" />
+                :loading="loadingSubmit" @click="submitSurvey" :disabled="!canSubmit || loadingSubmit" />
         </div>
     </div>
 </template>

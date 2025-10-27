@@ -65,8 +65,11 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/pengelolaan-skm/{skmHeader}/preview', 'preview')->name('skm.preview');
         Route::post('/pengelolaan-skm/{skmHeader}/update-detail', 'updateDetail')->name('skm.save_detail');
+        Route::post('/pengelolaan-skm/{skmHeader}/publish', 'publish')->name('skm.publish');
     });
+
+    Route::get('/skm/{skmHeader}/respondents', [App\Http\Controllers\SkmResultController::class, 'respondents'])->name('skm.respondents');
 });
 
-Route::get('/skm/{skmHeader}', [SkmHeaderController::class,'fillSurvey'])->name('skm.fillSurvey');
-Route::post('/skm/{skmHeader}', [SkmHeaderController::class,'submitSurvey'])->name('skm.submit_survey');
+Route::get('/skm/{skmHeader}', [SkmHeaderController::class, 'fillSurvey'])->name('skm.fillSurvey');
+Route::post('/skm/{skmHeader}', [SkmHeaderController::class, 'submitSurvey'])->name('skm.submit_survey');

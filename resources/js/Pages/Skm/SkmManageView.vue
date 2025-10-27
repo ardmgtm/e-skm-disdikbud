@@ -54,7 +54,7 @@
             <Column field="is_published" header="Status" class="w-24 text-center" :showFilterMenu="false">
                 <template #body="slotProps">
                     <Tag icon="pi pi-circle-fill" :severity="slotProps.data.is_published ? 'success' : 'danger'"
-                        :value="slotProps.data.is_published ? 'Di Publish' : 'Draft'" />
+                        :value="slotProps.data.is_published ? 'Dipublikasikan' : 'Draft'" />
                 </template>
             </Column>
             <Column field="id" class="w-16" header="Action">
