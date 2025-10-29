@@ -68,7 +68,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pengelolaan-skm/{skmHeader}/publish', 'publish')->name('skm.publish');
     });
 
-    Route::get('/skm/{skmHeader}/respondents', [App\Http\Controllers\SkmResultController::class, 'respondents'])->name('skm.respondents');
+    Route::get('/pengelolaan-skm/{skmHeader}/respondents', [App\Http\Controllers\SkmResultController::class, 'respondents'])->name('skm.respondents');
+    Route::get('/pengelolaan-skm/{skmHeader}/report-dashboard', [App\Http\Controllers\SkmResultController::class, 'reportDashboard'])->name('skm.report_dashboard');
 });
 
 Route::get('/skm/{skmHeader}', [SkmHeaderController::class, 'fillSurvey'])->name('skm.fillSurvey');

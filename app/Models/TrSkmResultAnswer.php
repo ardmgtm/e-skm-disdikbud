@@ -19,4 +19,9 @@ class TrSkmResultAnswer extends Model
     ];
 
     public $timestamps = false;
+
+    public function indicator()
+    {
+        return $this->belongsTo(\App\Models\VlSkmIndicator::class, 'id_skm_indicator');
+    }
 }

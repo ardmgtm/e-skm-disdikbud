@@ -76,16 +76,7 @@
                         </div>
                     </template>
                     <template v-else>
-                        <p class="m-0">
-                            At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium
-                            voluptatum
-                            deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate
-                            non
-                            provident, similique sunt in culpa
-                            qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum
-                            facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
-                            cumque nihil impedit quo minus.
-                        </p>
+                        <SkmDashboardReport :skm-header-id="headerData.id" />
                     </template>
                 </TabPanel>
             </TabPanels>
@@ -101,6 +92,7 @@ import axios from 'axios';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import SurveyRespondent from './Components/SurveyRespondent.vue';
+import SkmDashboardReport from './Components/SkmDashboardReport.vue';
 
 const headerData = ref(usePage().props.skm_header) as any;
 const breadcrumbs = ref([

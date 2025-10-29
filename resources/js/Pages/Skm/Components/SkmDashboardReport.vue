@@ -1,0 +1,265 @@
+<template>
+    <div>
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold">Dashboard Laporan SKM</h2>
+            <Button label="Refresh" icon="pi pi-refresh" size="small" @click="fetchReport" :disabled="loading" />
+        </div>
+        <Divider />
+        <div v-if="loading" class="text-center py-8">
+            <ProgressSpinner />
+        </div>
+        <div v-else>
+            <div class="flex flex-col gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Card class="shadow-lg border-gray-200 border">
+                        <template #title>Jumlah Responden</template>
+                        <template #content>
+                            <div class="text-3xl font-bold text-blue-700">{{ report.total_respondents }}</div>
+                        </template>
+                    </Card>
+                    <Card class="shadow-lg border-gray-200 border">
+                        <template #title>Rata-rata Usia</template>
+                        <template #content>
+                            <div class="text-3xl font-bold text-green-700">{{ report.avg_age }}</div>
+                        </template>
+                    </Card>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Card class="shadow-lg border-gray-200 border">
+                        <template #title>Rasio Jenis Kelamin</template>
+                        <template #content>
+                            <Chart type="pie" :data="genderChartData" :height="350" />
+                        </template>
+                    </Card>
+                    <Card class="shadow-lg border-gray-200 border">
+                        <template #title>Penilaian Indikator Layanan</template>
+                        <template #content>
+                            <div class="mb-6">
+                                <Chart type="bar" :data="indicatorChartData" :options="barChartOptions" :height="350" />
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full border text-sm">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="px-2 py-1 border">Indikator</th>
+                                            <th class="px-2 py-1 border">Rata-rata</th>
+                                            <th class="px-2 py-1 border">Jumlah Jawaban</th>
+                                            <th class="px-2 py-1 border">Skor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="ind in report.indicator_avg || []" :key="ind.id">
+                                            <td class="border px-2 py-1">{{ ind.name }}</td>
+                                            <td class="border px-2 py-1 text-center">{{ ind.avg_value }}</td>
+                                            <td class="border px-2 py-1 text-center">{{ ind.count }}</td>
+                                            <td class="border px-2 py-1 text-center">{{ ind.score }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                    </Card>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <Card class="shadow-lg border-gray-200 border">
+                        <template #title>Pendidikan</template>
+                        <template #content>
+                            <Chart type="bar" :data="educationChartData" :options="barChartOptions" :height="350" />
+                            <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
+                                <span v-for="(item, i) in educationChartData.labels" :key="item"
+                                    class="flex items-center gap-1">
+                                    <span
+                                        :style="{ background: educationChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
+                                    {{ item }}
+                                </span>
+                            </div>
+                        </template>
+                    </Card>
+                    <Card class="shadow-lg border-gray-200 border">
+                        <template #title>Pekerjaan</template>
+                        <template #content>
+                            <Chart type="bar" :data="occupationChartData" :options="barChartOptions" :height="350" />
+                            <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
+                                <span v-for="(item, i) in occupationChartData.labels" :key="item"
+                                    class="flex items-center gap-1">
+                                    <span
+                                        :style="{ background: occupationChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
+                                    {{ item }}
+                                </span>
+                            </div>
+                        </template>
+                    </Card>
+                    <Card class="shadow-lg border-gray-200 border">
+                        <template #title>Layanan/Service</template>
+                        <template #content>
+                            <Chart type="bar" :data="serviceChartData" :options="barChartOptions" :height="350" />
+                            <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
+                                <span v-for="(item, i) in serviceChartData.labels" :key="item"
+                                    class="flex items-center gap-1">
+                                    <span
+                                        :style="{ background: serviceChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
+                                    {{ item }}
+                                </span>
+                            </div>
+                        </template>
+                    </Card>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script setup lang="ts">
+function getColor(index: number) {
+    const palette = [
+        '#2ecc71', '#f1c40f', '#2980b9', '#e67e22', '#8e44ad', '#e74c3c', '#16a085', '#d35400', '#34495e', '#7f8c8d',
+        '#27ae60', '#f39c12', '#1abc9c', '#9b59b6', '#c0392b', '#95a5a6', '#bdc3c7', '#22313F', '#6C7A89', '#F9690E'
+    ];
+    return palette[index % palette.length];
+}
+import { ref, onMounted } from 'vue';
+import Divider from 'primevue/divider';
+import Card from 'primevue/card';
+import Chart from 'primevue/chart';
+import ProgressSpinner from 'primevue/progressspinner';
+import axios from 'axios';
+
+const props = defineProps<{ skmHeaderId: number | string }>();
+const loading = ref(true);
+type IndicatorAvg = {
+    id: number | string;
+    name: string;
+    avg_value: number;
+    count: number;
+    score: number;
+};
+
+const report = ref<{
+    total_respondents: number;
+    avg_age: number;
+    gender: { male: number; female: number };
+    education: any;
+    occupation: any;
+    service: any[];
+    indicator_avg: IndicatorAvg[];
+}>({
+    total_respondents: 0,
+    avg_age: 0,
+    gender: { male: 0, female: 0 },
+    education: {},
+    occupation: {},
+    service: [],
+    indicator_avg: [],
+});
+const genderChartData = ref<{ labels: string[]; datasets: { data: number[]; backgroundColor: string[] }[] }>(
+    {
+        labels: ['Laki-laki', 'Perempuan'],
+        datasets: [{ data: [0, 0], backgroundColor: ['#3498db', '#e74c3c'] }],
+    }
+);
+const educationChartData = ref<{ labels: string[]; datasets: { data: number[]; backgroundColor: string[] }[] }>(
+    {
+        labels: [],
+        datasets: [{ data: [], backgroundColor: [] }],
+    }
+);
+const occupationChartData = ref<{ labels: string[]; datasets: { data: number[]; backgroundColor: string[] }[] }>(
+    {
+        labels: [],
+        datasets: [{ data: [], backgroundColor: [] }],
+    }
+);
+
+const indicatorChartData = ref<{ labels: string[]; datasets: { data: number[]; backgroundColor: string[] }[] }>(
+    {
+        labels: [],
+        datasets: [{ data: [], backgroundColor: [] }],
+    }
+);
+const serviceChartData = ref<{ labels: string[]; datasets: { data: number[]; backgroundColor: string[] }[] }>(
+    {
+        labels: [],
+        datasets: [{ data: [], backgroundColor: [] }],
+    }
+);
+
+const barChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: false
+        },
+        title: {
+            display: false
+        }
+    },
+    scales: {
+        x: {
+            grid: {
+                display: false
+            },
+            ticks: {
+                color: '#888',
+                font: { size: 13 }
+            }
+        },
+        y: {
+            beginAtZero: true,
+            grid: {
+                color: '#eee'
+            },
+            ticks: {
+                color: '#888',
+                font: { size: 13 }
+            }
+        }
+    }
+};
+
+async function fetchReport() {
+    loading.value = true;
+    try {
+        const res = await axios.get(route('skm.report_dashboard', props.skmHeaderId));
+        report.value = res.data.data;
+        genderChartData.value.datasets[0].data = [report.value.gender.male, report.value.gender.female];
+
+        // Pendidikan
+        const eduArr = Array.isArray(report.value.education) ? report.value.education : [];
+        educationChartData.value.labels = eduArr.map(e => e.name);
+        educationChartData.value.datasets = [{
+            data: eduArr.map(e => e.count),
+            backgroundColor: eduArr.map((_, i) => getColor(i)),
+        }];
+
+        // Pekerjaan
+        const occArr = Array.isArray(report.value.occupation) ? report.value.occupation : [];
+        occupationChartData.value.labels = occArr.map(o => o.name);
+        occupationChartData.value.datasets = [{
+            data: occArr.map(o => o.count),
+            backgroundColor: occArr.map((_, i) => getColor(i)),
+        }];
+
+        // Layanan/Service
+        const svcArr: { name: string; count: number }[] = Array.isArray(report.value.service) ? report.value.service : [];
+        serviceChartData.value.labels = svcArr.map((s: { name: string; count: number }) => s.name);
+        serviceChartData.value.datasets = [{
+            data: svcArr.map((s: { name: string; count: number }) => s.count),
+            backgroundColor: svcArr.map((_: any, i: number) => getColor(i)),
+        }];
+
+        // Indikator rata-rata
+        const indArr: { name: string; avg_value: number; count: number }[] = Array.isArray(report.value.indicator_avg) ? report.value.indicator_avg : [];
+        indicatorChartData.value.labels = indArr.map((i: { name: string }) => i.name);
+        indicatorChartData.value.datasets = [{
+            data: indArr.map((i: { avg_value: number }) => i.avg_value),
+            backgroundColor: indArr.map((_, i) => getColor(i)),
+        }];
+    } catch (e) {
+        // handle error
+    } finally {
+        loading.value = false;
+    }
+}
+
+onMounted(fetchReport);
+</script>
