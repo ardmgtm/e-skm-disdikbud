@@ -34,7 +34,7 @@ class SkmResultController extends Controller
             'female' => $respondents->where('gender', false)->count() + $respondents->where('gender', 0)->count(),
         ];
         // Pendidikan
-        $educationAgg = $respondents->groupBy('id_education')->map(function($group, $id) {
+        $educationAgg = $respondents->groupBy('id_education')->map(function ($group, $id) {
             $first = $group->first();
             return [
                 'id' => $id,
@@ -44,7 +44,7 @@ class SkmResultController extends Controller
         })->values()->all();
 
         // Pekerjaan
-        $occupationAgg = $respondents->groupBy('id_occupation')->map(function($group, $id) {
+        $occupationAgg = $respondents->groupBy('id_occupation')->map(function ($group, $id) {
             $first = $group->first();
             return [
                 'id' => $id,
@@ -54,9 +54,9 @@ class SkmResultController extends Controller
         })->values()->all();
 
         // Layanan/Service
-        $serviceAgg = $respondents->groupBy(function($item) {
+        $serviceAgg = $respondents->groupBy(function ($item) {
             return optional($item->skmResultHeader->service)->id;
-        })->map(function($group, $id) {
+        })->map(function ($group, $id) {
             $first = $group->first();
             $serviceName = optional(optional($first->skmResultHeader)->service)->service_name ?? 'Lainnya';
             return [
@@ -69,7 +69,7 @@ class SkmResultController extends Controller
         // Rata-rata indikator
         $resultHeaderIds = $resultHeaders;
         $answers = \App\Models\TrSkmResultAnswer::whereIn('id_skm_result_header', $resultHeaderIds)->get();
-        $indicatorAgg = $answers->groupBy('id_skm_indicator')->map(function($group, $id) {
+        $indicatorAgg = $answers->groupBy('id_skm_indicator')->map(function ($group, $id) {
             $first = $group->first();
             $indicatorName = $first->desc_skm_indicator ?? optional($first->indicator)->indicator_name ?? 'Lainnya';
             $avgValue = $group->avg('value');
@@ -83,6 +83,34 @@ class SkmResultController extends Controller
             ];
         })->values()->all();
 
+        // Rata-rata dan skor per layanan
+        // 1. Ambil semua layanan
+        $serviceAvgAgg = collect();
+        $serviceGroups = $respondents->groupBy(function ($item) {
+            return optional($item->skmResultHeader->service)->id;
+        });
+        foreach ($serviceGroups as $serviceId => $group) {
+            $serviceName = optional(optional($group->first()->skmResultHeader)->service)->service_name ?? 'Lainnya';
+            // Hitung rata-rata per responden untuk layanan ini
+            $respondentIds = $group->pluck('id');
+            $resultHeaderIds = $group->pluck('id_skm_result_header');
+            // Ambil jawaban untuk responden di layanan ini
+            $answers = \App\Models\TrSkmResultAnswer::whereIn('id_skm_result_header', $resultHeaderIds)->get();
+            // Hitung rata-rata per responden
+            $avgPerRespondent = $answers->groupBy('id_skm_result_header')->map(function ($ansGroup) {
+                return $ansGroup->avg('value');
+            });
+            $serviceAvg = $avgPerRespondent->count() > 0 ? round($avgPerRespondent->avg(), 2) : 0;
+            $score = round($serviceAvg * 25);
+            $serviceAvgAgg->push([
+                'id' => $serviceId,
+                'name' => $serviceName,
+                'avg_value' => $serviceAvg,
+                'count' => $group->count(),
+                'score' => $score,
+            ]);
+        }
+
         return response()->json([
             'data' => [
                 'total_respondents' => $total,
@@ -92,6 +120,7 @@ class SkmResultController extends Controller
                 'occupation' => $occupationAgg,
                 'service' => $serviceAgg,
                 'indicator_avg' => $indicatorAgg,
+                'service_avg' => $serviceAvgAgg,
             ]
         ]);
     }

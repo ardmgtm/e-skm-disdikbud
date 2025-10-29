@@ -24,18 +24,20 @@
                         </template>
                     </Card>
                 </div>
+                <!-- penutup flex flex-col gap-6, sudah ditutup di bawah -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card class="shadow-lg border-gray-200 border">
-                        <template #title>Rasio Jenis Kelamin</template>
-                        <template #content>
-                            <Chart type="pie" :data="genderChartData" :height="350" />
-                        </template>
-                    </Card>
+                    <!-- <Card class="shadow-lg border-gray-200 border">
+                    <template #title>Rasio Jenis Kelamin</template>
+                    <template #content>
+                        <Chart type="pie" :data="genderChartData" :height="350" />
+                    </template>
+                </Card> -->
                     <Card class="shadow-lg border-gray-200 border">
                         <template #title>Penilaian Indikator Layanan</template>
                         <template #content>
                             <div class="mb-6">
-                                <Chart type="bar" :data="indicatorChartData" :options="barChartOptions" :height="350" />
+                                <Chart type="bar" :data="indicatorChartData" :options="barChartOptions"
+                                    :height="350" />
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full border text-sm">
@@ -53,6 +55,41 @@
                                             <td class="border px-2 py-1 text-center">{{ ind.avg_value }}</td>
                                             <td class="border px-2 py-1 text-center">{{ ind.count }}</td>
                                             <td class="border px-2 py-1 text-center">{{ ind.score }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                    </Card>
+                    <Card class="shadow-lg border-gray-200 border">
+                        <template #title>Rata-rata & Skor per Layanan</template>
+                        <template #content>
+                            <Chart type="bar" :data="serviceAvgChartData" :options="barChartOptions"
+                                :height="350" />
+                            <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
+                                <span v-for="(item, i) in serviceAvgChartData.labels" :key="item"
+                                    class="flex items-center gap-1">
+                                    <span
+                                        :style="{ background: serviceAvgChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
+                                    {{ item }}
+                                </span>
+                            </div>
+                            <div class="overflow-x-auto mt-4">
+                                <table class="min-w-full border text-sm">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="px-2 py-1 border">Layanan</th>
+                                            <th class="px-2 py-1 border">Rata-rata</th>
+                                            <th class="px-2 py-1 border">Jumlah Responden</th>
+                                            <th class="px-2 py-1 border">Skor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="svc in report.service_avg || []" :key="svc.id">
+                                            <td class="border px-2 py-1">{{ svc.name }}</td>
+                                            <td class="border px-2 py-1 text-center">{{ svc.avg_value }}</td>
+                                            <td class="border px-2 py-1 text-center">{{ svc.count }}</td>
+                                            <td class="border px-2 py-1 text-center">{{ svc.score }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -133,6 +170,13 @@ type IndicatorAvg = {
     score: number;
 };
 
+type ServiceAvg = {
+    id: number | string;
+    name: string;
+    avg_value: number;
+    count: number;
+    score: number;
+};
 const report = ref<{
     total_respondents: number;
     avg_age: number;
@@ -141,6 +185,7 @@ const report = ref<{
     occupation: any;
     service: any[];
     indicator_avg: IndicatorAvg[];
+    service_avg: ServiceAvg[];
 }>({
     total_respondents: 0,
     avg_age: 0,
@@ -149,6 +194,7 @@ const report = ref<{
     occupation: {},
     service: [],
     indicator_avg: [],
+    service_avg: [],
 });
 const genderChartData = ref<{ labels: string[]; datasets: { data: number[]; backgroundColor: string[] }[] }>(
     {
@@ -176,6 +222,13 @@ const indicatorChartData = ref<{ labels: string[]; datasets: { data: number[]; b
     }
 );
 const serviceChartData = ref<{ labels: string[]; datasets: { data: number[]; backgroundColor: string[] }[] }>(
+    {
+        labels: [],
+        datasets: [{ data: [], backgroundColor: [] }],
+    }
+);
+// Chart rata-rata per layanan
+const serviceAvgChartData = ref<{ labels: string[]; datasets: { data: number[]; backgroundColor: string[] }[] }>(
     {
         labels: [],
         datasets: [{ data: [], backgroundColor: [] }],
@@ -254,6 +307,15 @@ async function fetchReport() {
             data: indArr.map((i: { avg_value: number }) => i.avg_value),
             backgroundColor: indArr.map((_, i) => getColor(i)),
         }];
+        // Chart rata-rata per layanan
+        const svcAvgArr: { name: string; avg_value: number }[] = Array.isArray(report.value.service_avg) ? report.value.service_avg : [];
+        serviceAvgChartData.value.labels = svcAvgArr.map(s => s.name);
+        serviceAvgChartData.value.datasets = [{
+            data: svcAvgArr.map(s => s.avg_value),
+            backgroundColor: svcAvgArr.map((_, i) => getColor(i)),
+        }];
+        // Service rata-rata dan skor
+        // Tidak perlu chart, hanya tabel
     } catch (e) {
         // handle error
     } finally {
