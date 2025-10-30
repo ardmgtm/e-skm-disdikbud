@@ -5,151 +5,196 @@
             <Button label="Refresh" icon="pi pi-refresh" size="small" @click="fetchReport" :disabled="loading" />
         </div>
         <Divider />
-        <div v-if="loading" class="text-center py-8">
-            <ProgressSpinner />
-        </div>
-        <div v-else>
-            <div class="flex flex-col gap-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card class="shadow-lg border-gray-200 border">
-                        <template #title>Jumlah Responden</template>
-                        <template #content>
-                            <div class="text-3xl font-bold text-blue-700">{{ report.total_respondents }}</div>
-                        </template>
-                    </Card>
-                    <Card class="shadow-lg border-gray-200 border">
-                        <template #title>Rata-rata Usia</template>
-                        <template #content>
-                            <div class="text-3xl font-bold text-green-700">{{ report.avg_age }}</div>
-                        </template>
-                    </Card>
-                </div>
-                <!-- penutup flex flex-col gap-6, sudah ditutup di bawah -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- <Card class="shadow-lg border-gray-200 border">
-                    <template #title>Rasio Jenis Kelamin</template>
-                    <template #content>
-                        <Chart type="pie" :data="genderChartData" :height="350" />
-                    </template>
-                </Card> -->
-                    <Card class="shadow-lg border-gray-200 border">
-                        <template #title>Penilaian Indikator Layanan</template>
-                        <template #content>
-                            <div class="mb-6">
-                                <Chart type="bar" :data="indicatorChartData" :options="barChartOptions"
-                                    :height="350" />
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full border text-sm">
-                                    <thead>
-                                        <tr class="bg-gray-100">
-                                            <th class="px-2 py-1 border">Indikator</th>
-                                            <th class="px-2 py-1 border">Rata-rata</th>
-                                            <th class="px-2 py-1 border">Jumlah Jawaban</th>
-                                            <th class="px-2 py-1 border">Skor</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="ind in report.indicator_avg || []" :key="ind.id">
-                                            <td class="border px-2 py-1">{{ ind.name }}</td>
-                                            <td class="border px-2 py-1 text-center">{{ ind.avg_value }}</td>
-                                            <td class="border px-2 py-1 text-center">{{ ind.count }}</td>
-                                            <td class="border px-2 py-1 text-center">{{ ind.score }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </template>
-                    </Card>
-                    <Card class="shadow-lg border-gray-200 border">
-                        <template #title>Rata-rata & Skor per Layanan</template>
-                        <template #content>
-                            <Chart type="bar" :data="serviceAvgChartData" :options="barChartOptions"
-                                :height="350" />
-                            <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
-                                <span v-for="(item, i) in serviceAvgChartData.labels" :key="item"
-                                    class="flex items-center gap-1">
-                                    <span
-                                        :style="{ background: serviceAvgChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
-                                    {{ item }}
-                                </span>
-                            </div>
-                            <div class="overflow-x-auto mt-4">
-                                <table class="min-w-full border text-sm">
-                                    <thead>
-                                        <tr class="bg-gray-100">
-                                            <th class="px-2 py-1 border">Layanan</th>
-                                            <th class="px-2 py-1 border">Rata-rata</th>
-                                            <th class="px-2 py-1 border">Jumlah Responden</th>
-                                            <th class="px-2 py-1 border">Skor</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="svc in report.service_avg || []" :key="svc.id">
-                                            <td class="border px-2 py-1">{{ svc.name }}</td>
-                                            <td class="border px-2 py-1 text-center">{{ svc.avg_value }}</td>
-                                            <td class="border px-2 py-1 text-center">{{ svc.count }}</td>
-                                            <td class="border px-2 py-1 text-center">{{ svc.score }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </template>
-                    </Card>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <Card class="shadow-lg border-gray-200 border">
-                        <template #title>Pendidikan</template>
-                        <template #content>
-                            <Chart type="bar" :data="educationChartData" :options="barChartOptions" :height="350" />
-                            <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
-                                <span v-for="(item, i) in educationChartData.labels" :key="item"
-                                    class="flex items-center gap-1">
-                                    <span
-                                        :style="{ background: educationChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
-                                    {{ item }}
-                                </span>
-                            </div>
-                        </template>
-                    </Card>
-                    <Card class="shadow-lg border-gray-200 border">
-                        <template #title>Pekerjaan</template>
-                        <template #content>
-                            <Chart type="bar" :data="occupationChartData" :options="barChartOptions" :height="350" />
-                            <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
-                                <span v-for="(item, i) in occupationChartData.labels" :key="item"
-                                    class="flex items-center gap-1">
-                                    <span
-                                        :style="{ background: occupationChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
-                                    {{ item }}
-                                </span>
-                            </div>
-                        </template>
-                    </Card>
-                    <Card class="shadow-lg border-gray-200 border">
-                        <template #title>Layanan/Service</template>
-                        <template #content>
-                            <Chart type="bar" :data="serviceChartData" :options="barChartOptions" :height="350" />
-                            <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
-                                <span v-for="(item, i) in serviceChartData.labels" :key="item"
-                                    class="flex items-center gap-1">
-                                    <span
-                                        :style="{ background: serviceChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
-                                    {{ item }}
-                                </span>
-                            </div>
-                        </template>
-                    </Card>
+        <Transition name="fade" mode="out-in">
+            <div v-if="loading" class="text-center py-8">
+                <ProgressSpinner />
+            </div>
+            <div v-else>
+                <div class="flex flex-col gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <Card class="shadow-lg bg-primary text-white">
+                            <template #content>
+                                <div class="flex gap-2 items-center">
+                                    <i class="pi pi-file-check text-4xl"></i>
+                                    <div class="flex flex-col">
+                                        <div class="text-lg">Skor IKM</div>
+                                        <div class="text-4xl font-bold">{{ report.ikm ?? '-' }}</div>
+                                    </div>
+                                </div>
+                            </template>
+                        </Card>
+                        <Card class="shadow-lg bg-green-600 text-white">
+                            <template #content>
+                                <div class="flex gap-2 items-center">
+                                    <i class="pi pi-star text-4xl"></i>
+                                    <div class="flex flex-col">
+                                        <div class="text-lg">Predikat IKM</div>
+                                        <div class="text-2xl font-bold">{{ report.ikm_predikat ?? '-' }}</div>
+                                    </div>
+                                </div>
+                            </template>
+                        </Card>
+                        <Card class="shadow-lg bg-amber-600 text-white">
+                            <template #content>
+                                <div class="flex gap-2 items-center">
+                                    <i class="pi pi-users text-4xl"></i>
+                                    <div class="flex flex-col">
+                                        <div class="text-lg">Jumlah Responden</div>
+                                        <div class="text-4xl font-bold">{{ report.total_respondents }}</div>
+                                    </div>
+                                </div>
+                            </template>
+                        </Card>
+                        <Card class="shadow-lg bg-red-600 text-white">
+                            <template #content>
+                                <div class="flex gap-2 items-center">
+                                    <i class="pi pi-clock text-4xl"></i>
+                                    <div class="flex flex-col">
+                                        <div class="text-lg">Rata-rata Usia</div>
+                                        <div class="text-4xl font-bold">{{ report.avg_age }}</div>
+                                    </div>
+                                </div>
+                            </template>
+                        </Card>
+                    </div>
+                    <!-- penutup flex flex-col gap-6, sudah ditutup di bawah -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+                        <Card class="shadow-lg border-gray-200 border">
+                            <template #title>Penilaian Indikator Layanan</template>
+                            <template #content>
+                                <div class="mb-6">
+                                    <Chart type="bar" :data="indicatorChartData" :options="barChartOptions" :height="350" />
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full border text-sm">
+                                        <thead>
+                                            <tr class="bg-gray-100">
+                                                <th class="px-2 py-1 border">Indikator</th>
+                                                <th class="px-2 py-1 border">Rata-rata</th>
+                                                <th class="px-2 py-1 border">Jumlah Jawaban</th>
+                                                <th class="px-2 py-1 border">Skor</th>
+                                                <th class="px-2 py-1 border">Predikat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="ind in report.indicator_avg || []" :key="ind.id">
+                                                <td class="border px-2 py-1">{{ ind.name }}</td>
+                                                <td class="border px-2 py-1 text-center">{{ ind.avg_value }}</td>
+                                                <td class="border px-2 py-1 text-center">{{ ind.count }}</td>
+                                                <td class="border px-2 py-1 text-center">{{ ind.score }}</td>
+                                                <td class="border px-2 py-1 text-center">{{ ind.predikat }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                        </Card>
+                        <Card class="shadow-lg border-gray-200 border">
+                            <template #title>Rata-rata & Skor per Layanan</template>
+                            <template #content>
+                                <Chart type="bar" :data="serviceAvgChartData" :options="barChartOptions" :height="350" />
+                                <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
+                                    <span v-for="(item, i) in serviceAvgChartData.labels" :key="item"
+                                        class="flex items-center gap-1">
+                                        <span
+                                            :style="{ background: serviceAvgChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
+                                        {{ item }}
+                                    </span>
+                                </div>
+                                <div class="overflow-x-auto mt-4">
+                                    <table class="min-w-full border text-sm">
+                                        <thead>
+                                            <tr class="bg-gray-100">
+                                                <th class="px-2 py-1 border">Layanan</th>
+                                                <th class="px-2 py-1 border">Rata-rata</th>
+                                                <th class="px-2 py-1 border">Jumlah Responden</th>
+                                                <th class="px-2 py-1 border">Skor</th>
+                                                <th class="px-2 py-1 border">Predikat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="svc in report.service_avg || []" :key="svc.id">
+                                                <td class="border px-2 py-1">{{ svc.name }}</td>
+                                                <td class="border px-2 py-1 text-center">{{ svc.avg_value }}</td>
+                                                <td class="border px-2 py-1 text-center">{{ svc.count }}</td>
+                                                <td class="border px-2 py-1 text-center">{{ svc.score }}</td>
+                                                <td class="border px-2 py-1 text-center">{{ svc.predikat }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                        </Card>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Card class="shadow-lg border-gray-200 border">
+                            <template #title>Pendidikan</template>
+                            <template #content>
+                                <Chart type="bar" :data="educationChartData" :options="barChartOptions" :height="350" />
+                                <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
+                                    <span v-for="(item, i) in educationChartData.labels" :key="item"
+                                        class="flex items-center gap-1">
+                                        <span
+                                            :style="{ background: educationChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
+                                        {{ item }}
+                                    </span>
+                                </div>
+                            </template>
+                        </Card>
+                        <Card class="shadow-lg border-gray-200 border">
+                            <template #title>Pekerjaan</template>
+                            <template #content>
+                                <Chart type="bar" :data="occupationChartData" :options="barChartOptions" :height="350" />
+                                <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
+                                    <span v-for="(item, i) in occupationChartData.labels" :key="item"
+                                        class="flex items-center gap-1">
+                                        <span
+                                            :style="{ background: occupationChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
+                                        {{ item }}
+                                    </span>
+                                </div>
+                            </template>
+                        </Card>
+                        <Card class="shadow-lg border-gray-200 border">
+                            <template #title>Layanan/Service</template>
+                            <template #content>
+                                <Chart type="bar" :data="serviceChartData" :options="barChartOptions" :height="350" />
+                                <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
+                                    <span v-for="(item, i) in serviceChartData.labels" :key="item"
+                                        class="flex items-center gap-1">
+                                        <span
+                                            :style="{ background: serviceChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
+                                        {{ item }}
+                                    </span>
+                                </div>
+                            </template>
+                        </Card>
+                        <Card class="shadow-lg border-gray-200 border">
+                            <template #title>Rasio Jenis Kelamin</template>
+                            <template #content>
+                                <Chart type="pie" :data="genderChartData" :height="350" />
+                            </template>
+                        </Card>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Transition>
     </div>
 </template>
 <script setup lang="ts">
 function getColor(index: number) {
     const palette = [
-        '#2ecc71', '#f1c40f', '#2980b9', '#e67e22', '#8e44ad', '#e74c3c', '#16a085', '#d35400', '#34495e', '#7f8c8d',
-        '#27ae60', '#f39c12', '#1abc9c', '#9b59b6', '#c0392b', '#95a5a6', '#bdc3c7', '#22313F', '#6C7A89', '#F9690E'
+        '#4e79a7', // blue
+        '#76b7b2', // teal
+        '#59a14f', // green
+        '#edc949', // yellow
+        '#f28e2b', // orange
+        '#e15759', // red
+        '#ff9da7', // pink
+        '#af7aa1', // purple
+        '#9c755f', // brown
+        '#bab0ab', // gray
     ];
     return palette[index % palette.length];
 }
@@ -168,6 +213,7 @@ type IndicatorAvg = {
     avg_value: number;
     count: number;
     score: number;
+    predikat?: string;
 };
 
 type ServiceAvg = {
@@ -176,6 +222,7 @@ type ServiceAvg = {
     avg_value: number;
     count: number;
     score: number;
+    predikat?: string;
 };
 const report = ref<{
     total_respondents: number;
@@ -186,6 +233,8 @@ const report = ref<{
     service: any[];
     indicator_avg: IndicatorAvg[];
     service_avg: ServiceAvg[];
+    ikm?: number;
+    ikm_predikat?: string;
 }>({
     total_respondents: 0,
     avg_age: 0,
@@ -195,6 +244,8 @@ const report = ref<{
     service: [],
     indicator_avg: [],
     service_avg: [],
+    ikm: undefined,
+    ikm_predikat: undefined,
 });
 const genderChartData = ref<{ labels: string[]; datasets: { data: number[]; backgroundColor: string[] }[] }>(
     {

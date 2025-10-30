@@ -27,6 +27,14 @@ class SkmResultController extends Controller
         $resultHeaders = TrSkmResultHeader::where('id_skm_header', $header->id)->pluck('id');
         $respondents = TrRespondent::whereIn('id_skm_result_header', $resultHeaders)->get();
 
+        $getPredikat = function($score) {
+            if ($score >= 88.31) return 'A (Sangat Baik)';
+            if ($score >= 76.61) return 'B (Baik)';
+            if ($score >= 65.00) return 'C (Kurang Baik)';
+            if ($score >= 25.00) return 'D (Tidak Baik)';
+            return '-';
+        };
+
         $total = $respondents->count();
         $avgAge = $total > 0 ? round($respondents->avg('age'), 1) : 0;
         $gender = [
@@ -69,19 +77,28 @@ class SkmResultController extends Controller
         // Rata-rata indikator
         $resultHeaderIds = $resultHeaders;
         $answers = \App\Models\TrSkmResultAnswer::whereIn('id_skm_result_header', $resultHeaderIds)->get();
-        $indicatorAgg = $answers->groupBy('id_skm_indicator')->map(function ($group, $id) {
+        $indicatorAgg = $answers->groupBy('id_skm_indicator')->map(function ($group, $id) use (&$getPredikat) {
             $first = $group->first();
             $indicatorName = $first->desc_skm_indicator ?? optional($first->indicator)->indicator_name ?? 'Lainnya';
             $avgValue = $group->avg('value');
-            $score = round(($avgValue ?? 0) * 25);
+            $score = round(($avgValue ?? 0) * 25, 2);
             return [
                 'id' => $id,
                 'name' => $indicatorName,
                 'avg_value' => round($avgValue, 2),
                 'count' => $group->count(),
                 'score' => $score,
+                'predikat' => $getPredikat($score),
             ];
         })->values()->all();
+
+        // Nilai IKM: rata-rata dari seluruh rata-rata indikator layanan
+        $ikm = 0;
+        $ikm_predikat = '-';
+        if (count($indicatorAgg) > 0) {
+            $ikm = round(collect($indicatorAgg)->avg('avg_value'), 2) * 25;
+            $ikm_predikat = $getPredikat($ikm);
+        }
 
         // Rata-rata dan skor per layanan
         // 1. Ambil semua layanan
@@ -101,13 +118,14 @@ class SkmResultController extends Controller
                 return $ansGroup->avg('value');
             });
             $serviceAvg = $avgPerRespondent->count() > 0 ? round($avgPerRespondent->avg(), 2) : 0;
-            $score = round($serviceAvg * 25);
+            $score = round($serviceAvg * 25, 2);
             $serviceAvgAgg->push([
                 'id' => $serviceId,
                 'name' => $serviceName,
                 'avg_value' => $serviceAvg,
                 'count' => $group->count(),
                 'score' => $score,
+                'predikat' => $getPredikat($score),
             ]);
         }
 
@@ -121,6 +139,8 @@ class SkmResultController extends Controller
                 'service' => $serviceAgg,
                 'indicator_avg' => $indicatorAgg,
                 'service_avg' => $serviceAvgAgg,
+                'ikm' => $ikm,
+                'ikm_predikat' => $ikm_predikat,
             ]
         ]);
     }

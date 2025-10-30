@@ -16,7 +16,12 @@
         <Button class="lg:hidden" severity="secondary" icon="pi pi-arrow-left" variant="text" rounded
           @click.stop="$emit('close-sidebar')" aria-controls="sidebar" :aria-expanded="sidebarOpen" />
         <!-- Logo -->
-        <Link :href="route('dashboard')"><img src="/images/logo.png" alt="app-logo" class="h-12" /></Link>
+        <Link :href="route('dashboard')">
+          <div class="flex gap-2">
+            <img src="/images/logo.png" alt="app-logo" class="h-12" />
+            <span class="self-center text-xs font-semibold">Dinas Pendidikan dan Kebudayaan Kota Bontang</span>
+          </div>
+        </Link>
       </div>
 
       <div>
