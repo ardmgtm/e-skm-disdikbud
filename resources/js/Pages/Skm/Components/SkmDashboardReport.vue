@@ -65,6 +65,14 @@
                             <template #content>
                                 <div class="mb-6">
                                     <Chart type="bar" :data="indicatorChartData" :options="barChartOptions" :height="350" />
+                                    <div class="mt-2 flex flex-wrap gap-2 text-xs justify-center">
+                                        <span v-for="(item, i) in indicatorChartData.labels" :key="item"
+                                            class="flex items-center gap-1">
+                                            <span
+                                                :style="{ background: indicatorChartData.datasets[0].backgroundColor[i], width: '14px', height: '14px', display: 'inline-block', borderRadius: '3px' }"></span>
+                                            {{ item }}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="overflow-x-auto">
                                     <table class="min-w-full border text-sm">
@@ -170,12 +178,12 @@
                                 </div>
                             </template>
                         </Card>
-                        <Card class="shadow-lg border-gray-200 border">
+                        <!-- <Card class="shadow-lg border-gray-200 border">
                             <template #title>Rasio Jenis Kelamin</template>
                             <template #content>
                                 <Chart type="pie" :data="genderChartData" :height="350" />
                             </template>
-                        </Card>
+                        </Card> -->
                     </div>
                 </div>
             </div>
@@ -303,6 +311,7 @@ const barChartOptions = {
                 display: false
             },
             ticks: {
+                display: false,
                 color: '#888',
                 font: { size: 13 }
             }

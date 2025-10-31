@@ -28,7 +28,7 @@
         </template>
         <template #action>
             <div class="flex justify-end mb-4 gap-2">
-                <Button label="Publish" icon="pi pi-check" severity="success" size="small"
+                <Button label="Publikasikan" icon="pi pi-check" severity="success" size="small"
                     @click.prevent="confirmPublish" v-if="!headerData.is_published" />
                 <Link :href="route('skm.preview', headerData.uuid)">
                 <Button label="Pratinjau Survei" icon="pi pi-eye" size="small" />

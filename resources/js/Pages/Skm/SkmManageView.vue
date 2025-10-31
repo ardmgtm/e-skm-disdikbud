@@ -5,8 +5,8 @@
         <template #action>
             <Button label="Tambah SKM" icon="pi pi-plus" @click="addSkmAction" />
         </template>
-        <AppDataTableServer :handler="dtHandler" v-model:selection="selectedData" :filters="filters" data-key="id" size="large"
-            empty-message="Tidak ada data SKM.">
+        <AppDataTableServer :handler="dtHandler" v-model:selection="selectedData" :filters="filters" data-key="id"
+            size="large" empty-message="Tidak ada data SKM.">
             <!-- <template #header-start>
                 <Transition name="fadetransition" mode="out-in" appear>
                     <div v-if="selectedData?.length > 0">
@@ -22,16 +22,16 @@
                 </Transition>
             </template> -->
             <Column field="id" selectionMode="multiple" headerStyle="width: 3rem" />
-            <Column field="name" header="Nama" class="min-w-72" :show-clear-button="false" sortable>
+            <Column field="name" header="Nama" class="min-w-72 max-w-72" :show-clear-button="false" sortable>
                 <template #filter="{ filterModel, filterCallback }">
                     <InputText size="small" v-model="filterModel.value" type="text" @change="filterCallback()" fluid />
                 </template>
                 <template #body="slotProps">
                     <Link :href="route('skm.show', slotProps.data.uuid)">
-                    <Button variant="link" class="font-bold flex items-center gap-2">
-                        {{ slotProps.data.name }}
+                    <div class="font-bold flex items-center gap-2 text-primary">
                         <i class="pi pi-external-link text-sm"></i>
-                    </Button>
+                        <span class="truncate block w-full" title="slotProps.data.name">{{ slotProps.data.name }}</span>
+                    </div>
                     </Link>
                 </template>
             </Column>
@@ -60,10 +60,10 @@
             <Column field="id" class="w-16" header="Action">
                 <template #body="slotProps">
                     <div class="flex gap-2">
-                        <Button icon="pi pi-pen-to-square" severity="info"
-                            label="Edit" size="small" @click="editSkmAction(slotProps.data)" />
-                        <Button icon="pi pi-trash" severity="danger" label="Delete"
-                            size="small" @click="deleteSkmAction(slotProps.data)" />
+                        <Button icon="pi pi-pen-to-square" severity="info" label="Edit" size="small"
+                            @click="editSkmAction(slotProps.data)" />
+                        <Button icon="pi pi-trash" severity="danger" label="Delete" size="small"
+                            @click="deleteSkmAction(slotProps.data)" />
                     </div>
                 </template>
             </Column>

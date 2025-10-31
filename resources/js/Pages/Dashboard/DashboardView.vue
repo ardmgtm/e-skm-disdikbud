@@ -1,7 +1,7 @@
 <template>
     <Head title="Dashboard"/>
     <AdminLayout title="Dashboard" :breadcrumbs="breadcrumbs">
-        <h1>Hello world</h1>
+        <!-- <h1>Hello world</h1> -->
     </AdminLayout>
 </template>
 <script setup lang="ts">

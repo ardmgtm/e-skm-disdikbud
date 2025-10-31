@@ -45,7 +45,12 @@ const dialogVisible: Ref<boolean> = ref(false);
 const editMode: Ref<boolean> = ref(false);
 const loading: Ref<boolean> = ref(false);
 
-const formData = reactive({
+const formData = reactive<{
+    id: any;
+    name: any;
+    start_date: any;
+    end_date: any;
+}>({
     id: null,
     name: null,
     start_date: null,
@@ -78,6 +83,8 @@ function addSubmitAction(event: FormSubmitEvent) {
     formErrors.value = {};
     if (event.valid) {
         loading.value = true;
+        formData.start_date = new Date(formData.start_date).toLocaleString('sv-SE', { timeZone: 'Asia/Makassar' }).replace(' ', 'T');
+        formData.end_date = new Date(formData.end_date).toLocaleString('sv-SE', { timeZone: 'Asia/Makassar' }).replace(' ', 'T');
         axios.post(route('skm.create'), formData)
             .then((response) => {
                 toast.add({
@@ -115,6 +122,8 @@ function editAction(data: any) {
 function editSubmitAction(event: FormSubmitEvent) {
     if (event.valid) {
         loading.value = true;
+        formData.start_date = new Date(formData.start_date).toLocaleString('sv-SE', { timeZone: 'Asia/Makassar' }).replace(' ', 'T');
+        formData.end_date = new Date(formData.end_date).toLocaleString('sv-SE', { timeZone: 'Asia/Makassar' }).replace(' ', 'T');
         axios.put(route('skm.update', { id: formData.id }), formData)
             .then((response) => {
                 toast.add({

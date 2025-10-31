@@ -12,7 +12,7 @@
                             <img src="/images/logo.png" class="h-16" alt="App Logo"/>
                         </div>
                         <div class="text-surface-900 dark:text-surface-0 text-3xl font-bold mb-1">Manajamen SKM</div>
-                        <div class="text-surface-400 dark:text-surface-0 text-lg font-medium mb-4">Dinas Pendidikan dan Kebudayaan</div>
+                        <div class="text-surface-400 dark:text-surface-0 text-lg font-medium mb-4">Dinas Pendidikan dan Kebudayaan Kota Bontang</div>
                     </div>
         
                     <Form class="flex flex-col gap-2" @submit="loginAction" :resolver="resolver">
@@ -28,12 +28,12 @@
                             <Message class="h-2 mt-2" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
                         </FormField>
         
-                        <div class="flex items-center justify-between mb-4">
+                        <!-- <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center">
                                 <Checkbox id="remember" name="remember" v-model="formSignIn.remember" :binary="true" class="mr-2" />
                                 <label for="remember">Remember me</label>
                             </div>
-                        </div>
+                        </div> -->
                         <Button type="submit" label="Login" icon="pi pi-send" class="w-full" :loading="loading"/>
                     </Form>
                 </div>

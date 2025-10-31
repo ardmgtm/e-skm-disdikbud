@@ -82,6 +82,8 @@ function deleteService(service: Service) {
 
 function onServiceCreated(newService: Service) {
     modelValue.value = [...modelValue.value, newService];
+    const totalPages = Math.ceil(modelValue.value.length / rows.value);
+    first.value = (totalPages - 1) * rows.value;
 }
 function onServiceUpdated(updatedService: Service) {
     const idx = modelValue.value.findIndex(s => s.id === updatedService.id);
