@@ -1,0 +1,53 @@
+{
+    # Debug mode (remove in production)
+    debug
+    
+    # Global options
+    auto_https off
+}
+
+:80 {
+    # Set the root directory
+    root * /app/public
+
+    # Enable PHP processing using FrankenPHP's built-in PHP server
+    php_server
+
+    # Enable file server for static files
+    file_server
+
+    # Handle Laravel routes
+    try_files {path} {path}/ /index.php?{query}
+
+    # Security headers
+    header {
+        # Remove server information
+        -Server
+        
+        # Security headers
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy strict-origin-when-cross-origin
+    }
+
+    # Logging
+    log {
+        output stdout
+        format console
+        level INFO
+    }
+
+    # Health check endpoint
+    handle /health {
+        respond "OK" 200
+    }
+
+    # Handle Laravel API routes
+    handle /api/* {
+        php_server
+    }
+
+    # Compression
+    encode gzip zstd
+}
