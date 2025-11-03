@@ -1,0 +1,35 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: e-skm-disdikbud
+    restart: unless-stopped
+    ports:
+      - "9000:80"
+    volumes:
+      - ./storage:/app/storage
+      - ./bootstrap/cache:/app/bootstrap/cache
+      - ./.env:/app/.env
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - LOG_CHANNEL=stack
+    networks:
+      - katts-network
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  katts-network:
+    driver: bridge
