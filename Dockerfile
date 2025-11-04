@@ -55,6 +55,10 @@ COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile
 # Copy supervisor configuration
 COPY docker/supervisor/laravel-worker.conf /etc/supervisor/conf.d/laravel-worker.conf
 
+# Set up environment file and database
+RUN cp .env.example .env
+RUN touch database/database.sqlite
+
 # Generate Laravel application key if not set
 RUN php artisan key:generate --force
 
@@ -63,6 +67,14 @@ RUN php artisan package:discover --ansi \
     && php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache
+
+# Run database migrations and seeders
+RUN php artisan migrate --force --seed
+
+# Install Node.js and build frontend assets
+RUN apt update && apt install -y nodejs npm
+RUN npm install
+RUN npm run build
 
 # Expose port 80
 EXPOSE 80
