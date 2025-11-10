@@ -11,7 +11,7 @@ services:
       - ./storage:/app/storage
       - ./bootstrap/cache:/app/bootstrap/cache
       - ./.env:/app/.env
-      - ./database/database.sqlite:/app/database/database.sqlite
+      - ./database:/app/database
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/up"]
       interval: 30s
