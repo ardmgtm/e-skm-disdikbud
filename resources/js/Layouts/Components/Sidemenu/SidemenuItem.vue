@@ -1,36 +1,48 @@
 <template>
-    <div v-if="props.sparator" class="my-2">
+    <div v-if="props.sparator && !props.collapsed" class="my-2">
         <span class="p-2 font-bold text-gray-500">{{ props.label }}</span>
     </div>
     <div v-else>
         <component :is="url ? Link : 'div'" v-ripple :href="props.url ?? ''"
             class="flex gap-2 p-2 items-center rounded-lg cursor-pointer group ripple-box hover:bg-surface-100"
-            :class="{ 'text-primary font-bold': isActive || submenuExpand }" @click.stop="onclickHandle">
+            :class="[
+                { 'text-primary font-bold': isActive || submenuExpand },
+                props.collapsed ? 'justify-center' : ''
+            ]" 
+            @click.stop="onclickHandle"
+            v-tooltip.right="props.collapsed ? props.label : ''"
+        >
             <div v-if="props.icon != null"
-                class="rounded-lg border h-8 w-8 flex items-center justify-center group-hover:border-primary"
+                class="flex-none rounded-lg border h-8 w-8 flex items-center justify-center group-hover:border-primary"
                 :class="{ 'border-primary': isActive || submenuExpand, 'border-surface-300': !isActive && !submenuExpand }">
                 <i class="group-hover:text-primary"
                     :class="[props.icon, { 'text-primary': isActive || submenuExpand, 'text-surface-500': !isActive && !submenuExpand }]" />
             </div>
-            <div v-else>
+            <div v-else class="flex-none">
                 <div class="h-8 w-8 flex items-center justify-center">
                     <div class="rounded-full h-2 w-2 group-hover:bg-primary"
                         :class="{ 'bg-primary': isActive || submenuExpand, 'bg-surface-500': !isActive && !submenuExpand }">
                     </div>
                 </div>
             </div>
-            <span class="flex-1">{{ props.label }}</span>
-            <div class="flex-none" v-if="props.items != null">
+            <span v-show="!props.collapsed" class="flex-1 transition-all duration-200 overflow-hidden whitespace-nowrap">{{ props.label }}</span>
+            <div v-show="!props.collapsed" class="flex-none transition-all duration-200" v-if="props.items != null">
                 <i class="pi pi-chevron-down transition duration-300 text-gray-400"
                     :class="{ '-rotate-180': submenuExpand, 'rotate-0': !submenuExpand }"></i>
             </div>
         </component>
-        <ul class="ml-4 transition-height duration-300 ease-in-out overflow-hidden"
+        <ul v-show="!props.collapsed" class="ml-4 transition-height duration-300 ease-in-out overflow-hidden"
             :style="{ height: submenuExpand ? submenuHeight : '0' }">
             <li v-for="subMenu in props.items">
-                <SidemenuItem :label="subMenu.label" :url="subMenu.url" @item-active="updateActiveState"
-                    v-if="can(subMenu.permissions as string | string[])" :items="subMenu.items"
-                    @click="onclickHandle" />
+                <SidemenuItem 
+                    :label="subMenu.label" 
+                    :url="subMenu.url" 
+                    :collapsed="props.collapsed"
+                    @item-active="updateActiveState"
+                    v-if="can(subMenu.permissions as string | string[])" 
+                    :items="subMenu.items"
+                    @click="onclickHandle" 
+                />
             </li>
         </ul>
     </div>
@@ -39,7 +51,7 @@
 import { ref, computed, onMounted } from "vue";
 import { MenuItem } from "primevue/menuitem";
 import { Link, usePage } from "@inertiajs/vue3";
-import { can } from "@/Core/Utiils/permission-check";
+import { can } from "@/Core/Utils/permission-check";
 import { SideMenuItem } from "@/Core/Configs/sidemenu-item";
 
 const emit = defineEmits(["item-active"]);
@@ -64,6 +76,10 @@ const props = defineProps({
     items: {
         type: Array as () => SideMenuItem[],
         required: false,
+    },
+    collapsed: {
+        type: Boolean,
+        default: false
     }
 })
 
